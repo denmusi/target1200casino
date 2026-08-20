@@ -914,6 +914,42 @@
             width: 100%;
         }
 
+        /* Double Range Slider Styling */
+        #range-bet-start-slider::-webkit-slider-thumb,
+        #range-bet-end-slider::-webkit-slider-thumb {
+            pointer-events: auto;
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--accent-gold);
+            border: 2px solid #1a1a1a;
+            box-shadow: 0 0 6px rgba(212, 175, 55, 0.7);
+            cursor: pointer;
+            transition: transform 0.1s ease;
+        }
+        #range-bet-start-slider::-webkit-slider-thumb:hover,
+        #range-bet-end-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.25);
+        }
+        #range-bet-start-slider::-moz-range-thumb,
+        #range-bet-end-slider::-moz-range-thumb {
+            pointer-events: auto;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--accent-gold);
+            border: 2px solid #1a1a1a;
+            box-shadow: 0 0 6px rgba(212, 175, 55, 0.7);
+            cursor: pointer;
+            transition: transform 0.1s ease;
+        }
+        #range-bet-start-slider::-moz-range-thumb:hover,
+        #range-bet-end-slider::-moz-range-thumb:hover {
+            transform: scale(1.25);
+        }
+
         .shop-panel-title {
             font-size: 1.1rem;
             color: var(--accent-gold);
@@ -1416,24 +1452,35 @@
                     </div>
 
                     <!-- Range-Based Bet Control inside slots panel -->
-                    <div class="range-bet-container" id="slots-bet-control" style="display: flex; flex-direction: column; gap: 8px; width: 100%; margin: 15px 0; background: rgba(0, 0, 0, 0.25); padding: 12px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.05); box-sizing: border-box;">
+                    <div class="range-bet-container" id="slots-bet-control" style="display: flex; flex-direction: column; gap: 12px; width: 100%; margin: 15px 0; background: rgba(0, 0, 0, 0.25); padding: 14px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.05); box-sizing: border-box;">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
                             <span style="font-size: 0.76rem; font-weight: bold; color: var(--text-muted); letter-spacing: 0.5px;">出題・BET範囲 (Word ID Range)</span>
                             <span style="font-size: 0.76rem; font-weight: bold; color: var(--accent-gold);">BET: <span id="slots-bet-display" style="font-size: 0.92rem; font-weight: 800;">100</span> コイン</span>
                         </div>
                         
-                        <!-- Start ID Control -->
-                        <div style="display: flex; align-items: center; gap: 8px; width: 100%;">
-                            <span style="font-size: 0.72rem; color: var(--text-muted); width: 45px; text-align: left; flex-shrink: 0;">開始 ID:</span>
-                            <input type="range" id="range-bet-start-slider" min="1" max="1700" value="1" style="flex: 1; height: 6px; border-radius: 3px; accent-color: var(--accent-gold); cursor: pointer; outline: none; background: rgba(255,255,255,0.1);">
-                            <input type="number" id="range-bet-start-num" min="1" max="1700" value="1" style="width: 58px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; color: var(--text-main); font-size: 0.76rem; padding: 4px 2px; text-align: center; font-weight: bold; -moz-appearance: textfield;">
+                        <!-- Double Range Slider Container -->
+                        <div style="position: relative; height: 16px; width: 100%; display: flex; align-items: center; margin: 4px 0;">
+                            <!-- Slider track background -->
+                            <div style="position: absolute; height: 6px; width: 100%; background: rgba(255,255,255,0.1); border-radius: 3px; z-index: 1; pointer-events: none;"></div>
+                            <!-- Selected range fill -->
+                            <div id="range-bet-slider-fill" style="position: absolute; height: 6px; background: var(--accent-gold); border-radius: 3px; z-index: 2; pointer-events: none; left: 0%; width: 5.82%;"></div>
+                            
+                            <!-- Overlapping range inputs -->
+                            <input type="range" id="range-bet-start-slider" min="1" max="1700" value="1" style="position: absolute; width: 100%; height: 6px; background: none; pointer-events: none; -webkit-appearance: none; appearance: none; z-index: 3; outline: none; margin: 0; padding: 0;">
+                            <input type="range" id="range-bet-end-slider" min="1" max="1700" value="100" style="position: absolute; width: 100%; height: 6px; background: none; pointer-events: none; -webkit-appearance: none; appearance: none; z-index: 4; outline: none; margin: 0; padding: 0;">
                         </div>
-                        
-                        <!-- End ID Control -->
-                        <div style="display: flex; align-items: center; gap: 8px; width: 100%;">
-                            <span style="font-size: 0.72rem; color: var(--text-muted); width: 45px; text-align: left; flex-shrink: 0;">終了 ID:</span>
-                            <input type="range" id="range-bet-end-slider" min="1" max="1700" value="100" style="flex: 1; height: 6px; border-radius: 3px; accent-color: var(--accent-gold); cursor: pointer; outline: none; background: rgba(255,255,255,0.1);">
-                            <input type="number" id="range-bet-end-num" min="1" max="1700" value="100" style="width: 58px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; color: var(--text-main); font-size: 0.76rem; padding: 4px 2px; text-align: center; font-weight: bold; -moz-appearance: textfield;">
+
+                        <!-- Numeric inputs side-by-side -->
+                        <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; font-size: 0.74rem;">
+                            <div style="display: flex; align-items: center; gap: 6px;">
+                                <span style="color: var(--text-muted);">開始 ID:</span>
+                                <input type="number" id="range-bet-start-num" min="1" max="1700" value="1" style="width: 58px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; color: var(--text-main); font-size: 0.76rem; padding: 4px 2px; text-align: center; font-weight: bold; -moz-appearance: textfield;">
+                            </div>
+                            <span style="color: var(--text-muted); font-weight: bold;">〜</span>
+                            <div style="display: flex; align-items: center; gap: 6px;">
+                                <span style="color: var(--text-muted);">終了 ID:</span>
+                                <input type="number" id="range-bet-end-num" min="1" max="1700" value="100" style="width: 58px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; color: var(--text-main); font-size: 0.76rem; padding: 4px 2px; text-align: center; font-weight: bold; -moz-appearance: textfield;">
+                            </div>
                         </div>
                     </div>
 
@@ -1508,13 +1555,10 @@
 
             <!-- Right Column: Payout Legend & History -->
             <div class="slots-right-legend" style="display: flex; flex-direction: column; gap: 20px;">
-                <!-- Question History Card -->
-                <div class="history-panel" style="background: var(--bg-card); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 8px; box-sizing: border-box;">
-                    <h3 class="shop-panel-title" style="margin: 0; display: flex; align-items: center; gap: 6px; font-size: 0.95rem;">📖 出題履歴 (History)</h3>
-                    <div id="slots-history-list" style="display: flex; flex-direction: column; gap: 6px; max-height: 280px; overflow-y: auto; padding-right: 4px;">
-                        <div style="color: var(--text-muted); font-size: 0.78rem; text-align: center; padding: 10px 0;">履歴はありません</div>
-                    </div>
-                </div>
+                <!-- Question History Button -->
+                <button class="btn btn-gold" onclick="openHistoryModal()" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: bold; padding: 12px; border-radius: 12px; font-size: 0.9rem;">
+                    📖 出題履歴 (History)
+                </button>
 
                 <div>
                     <h3 class="shop-panel-title" style="margin-bottom: 8px;">🏆 Payouts</h3>
@@ -1674,6 +1718,24 @@
             <button class="btn-student-submit" onclick="saveStudentInfoFromModal()">保存して閉じる</button>
             <button class="btn-student-cancel" onclick="closeStudentModal()">閉じる</button>
         </div>
+    </div>
+</div>
+
+<!-- History Modal (Popup Dialog) -->
+<div id="history-modal-overlay" class="student-modal-overlay">
+    <div class="student-modal" style="max-width: 440px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 10px;">
+            <div class="student-modal-title" style="margin: 0; display: flex; align-items: center; gap: 8px;">📖 出題履歴 (History)</div>
+            <button onclick="closeHistoryModal()" style="background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.3rem; line-height: 1; padding: 4px;">&times;</button>
+        </div>
+        
+        <div id="slots-history-list" style="display: flex; flex-direction: column; gap: 8px; max-height: 380px; overflow-y: auto; padding-right: 6px; text-align: left;">
+            <div style="color: var(--text-muted); font-size: 0.85rem; text-align: center; padding: 20px 0;">履歴はありません</div>
+        </div>
+        
+        <button class="btn btn-gold" onclick="closeHistoryModal()" style="margin-top: 20px; width: 100%; min-height: 36px; border-radius: 10px; font-weight: bold;">
+            閉じる
+        </button>
     </div>
 </div>
 
@@ -2037,6 +2099,15 @@
     function closeStudentModal() {
         document.getElementById("student-modal-overlay").classList.remove("active");
     }
+
+    window.openHistoryModal = function() {
+        document.getElementById("history-modal-overlay").classList.add("active");
+        renderHistory();
+    };
+
+    window.closeHistoryModal = function() {
+        document.getElementById("history-modal-overlay").classList.remove("active");
+    };
 
     function fetchNicknameFromServer() {
         let grade = document.getElementById("modal-student-grade").value.trim();
@@ -2505,9 +2576,13 @@
         if (startSlider && startNum && endSlider && endNum) {
             // Slider events (input handles real-time dragging)
             startSlider.addEventListener("input", (e) => {
+                startSlider.style.zIndex = "5";
+                endSlider.style.zIndex = "4";
                 updateRangeBet(e.target.value, betEndId, 'start');
             });
             endSlider.addEventListener("input", (e) => {
+                endSlider.style.zIndex = "5";
+                startSlider.style.zIndex = "4";
                 updateRangeBet(betStartId, e.target.value, 'end');
             });
 
@@ -2569,6 +2644,17 @@
         if (startNum && startNum.value != betStartId) startNum.value = betStartId;
         if (endSlider && endSlider.value != betEndId) endSlider.value = betEndId;
         if (endNum && endNum.value != betEndId) endNum.value = betEndId;
+
+        // Update double-slider track range fill highlight
+        const fill = document.getElementById("range-bet-slider-fill");
+        if (fill) {
+            const min = 1;
+            const max = 1700;
+            const percent1 = ((betStartId - min) / (max - min)) * 100;
+            const percent2 = ((betEndId - min) / (max - min)) * 100;
+            fill.style.left = percent1 + "%";
+            fill.style.width = (percent2 - percent1) + "%";
+        }
 
         // Save state
         saveLocalStorage();
