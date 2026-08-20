@@ -785,15 +785,16 @@
             border-radius: 16px;
             padding: 14px;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
+            align-items: stretch;
             gap: 12px;
         }
 
         .shop-item-info {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             gap: 12px;
+            width: 100%;
         }
 
         .shop-item-icon {
@@ -812,13 +813,13 @@
             font-size: 0.95rem;
             font-weight: 600;
             color: var(--text-main);
-            margin-bottom: 2px;
+            margin-bottom: 4px;
         }
 
         .shop-item-details p {
             font-size: 0.76rem;
             color: var(--text-muted);
-            line-height: 1.2;
+            line-height: 1.25;
         }
 
         .shop-buy-btn {
@@ -832,9 +833,11 @@
             cursor: pointer;
             transition: all 0.15s ease;
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
+            justify-content: center;
             align-items: center;
-            min-width: 80px;
+            gap: 8px;
+            width: 100%;
         }
 
         .shop-buy-btn:hover {
@@ -843,9 +846,8 @@
         }
 
         .shop-buy-btn span.price {
-            font-size: 0.72rem;
-            opacity: 0.8;
-            font-weight: 500;
+            font-size: 0.76rem;
+            font-weight: bold;
         }
 
         /* Slots screen split layout */
