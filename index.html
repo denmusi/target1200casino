@@ -4793,6 +4793,23 @@
         }
     });
 
+    function updateTurnStatusBanner() {
+        const banner = document.getElementById("v21-turn-banner");
+        if (!banner) return;
+
+        if (v21State.mode === 'solo') {
+            if (!v21State.playerLocked) {
+                banner.innerText = "単語を選択してください（確定ボタンでロックイン）";
+            } else {
+                banner.innerText = "AIの手札選択を待っています...";
+            }
+        } else {
+            const playerStatus = v21State.playerLocked ? "確定済み" : `${v21State.playerSelectedIds.length}枚選択中`;
+            const opponentStatus = v21State.opponentLocked ? "確定済み" : `${v21State.opponentSelectedCount}枚選択中`;
+            banner.innerText = `あなた: ${playerStatus} | 相手 (${v21State.opponentName}): ${opponentStatus}`;
+        }
+    }
+
     function startV21Round() {
         document.getElementById("v21-setup-controls").style.display = "none";
         document.getElementById("v21-spell-addon-indicator").innerText = `スペル加算: ${v21State.spellAddon ? "ON" : "OFF"}`;
