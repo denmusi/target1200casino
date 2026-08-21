@@ -1915,11 +1915,13 @@
                     </div>
                 </div>
 
-                <!-- Matchmaking Loading Overlay -->
-                <div id="v21-match-overlay" style="display: none; background: rgba(0,0,0,0.85); border-radius: 12px; padding: 24px; text-align: center; margin-top: 16px; border: 1px solid var(--accent-gold);">
-                    <div class="loading-spinner" style="width: 36px; height: 36px; border: 3px solid rgba(255,255,255,0.1); border-top-color: var(--accent-gold); border-radius: 50%; animation: spin 1s infinite linear; margin: 0 auto 12px auto;"></div>
-                    <div id="v21-match-status" style="font-size: 0.9rem; color: var(--text-main); margin-bottom: 12px; font-weight: bold;">接続中...</div>
-                    <button class="btn btn-secondary" id="btn-v21-cancel-match" style="padding: 6px 16px; font-size: 0.8rem;">キャンセル</button>
+                <!-- Matchmaking Loading Overlay (Full-screen Centered Modal) -->
+                <div id="v21-match-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); z-index: 99999; align-items: center; justify-content: center;">
+                    <div style="background: #1c1c1e; border: 2px solid var(--accent-gold); border-radius: 16px; padding: 32px; width: 90%; max-width: 380px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.7); display: flex; flex-direction: column; align-items: center; gap: 16px;">
+                        <div class="loading-spinner" style="width: 44px; height: 44px; border: 4px solid rgba(255,255,255,0.1); border-top-color: var(--accent-gold); border-radius: 50%; animation: spin 1s infinite linear;"></div>
+                        <div id="v21-match-status" style="font-size: 1rem; color: var(--text-main); font-weight: bold; font-family: 'Outfit', sans-serif;">接続中...</div>
+                        <button class="btn btn-secondary" id="btn-v21-cancel-match" style="padding: 10px 20px; font-size: 0.85rem; width: 100%;">キャンセル</button>
+                    </div>
                 </div>
             </div>
 
@@ -2197,6 +2199,19 @@
 <!-- ============================================== -->
 <!-- GAME SCRIPT -->
 <!-- ============================================== -->
+<script>
+    // Global Error Logger for UI Troubleshooting (Separate block to catch syntax errors in the main script)
+    window.onerror = function(message, source, lineno, colno, error) {
+        const errorMsg = "【システムエラー】\nエラー: " + message + "\nファイル: " + source + "\n行番号: " + lineno + " / 列番号: " + colno;
+        alert(errorMsg);
+        return false;
+    };
+    window.onunhandledrejection = function(event) {
+        const reason = event.reason;
+        const errorMsg = "【非同期システムエラー】\nエラー: " + (reason && (reason.message || reason));
+        alert(errorMsg);
+    };
+</script>
 <script>
     // Web Audio Synthesizer for Casino SFX
     const AudioSynth = {
@@ -4271,6 +4286,9 @@
     function startQuickMatchmaking() {
         cancelMatchmaking();
         
+        // Show the matchmaking full-screen overlay modal
+        document.getElementById("v21-match-overlay").style.display = "flex";
+        
         const tier = getTierIndex(player.rating || 1500);
         let phase = 0;
         
@@ -4367,121 +4385,149 @@
 
     function cancelMatchmaking() {
         if (v21State.matchTimers) {
-            v21State.matchTimers.forEach(t => clearTimeout(t));
+            try {
+                v21State.matchTimers.forEach(t => clearTimeout(t));
+            } catch (e) { console.error(e); }
         }
-        if (matchmakingTimer) clearTimeout(matchmakingTimer);
+        if (matchmakingTimer) {
+            try {
+                clearTimeout(matchmakingTimer);
+            } catch (e) { console.error(e); }
+        }
         
         if (v21Conn) {
-            v21Conn.close();
+            try {
+                v21Conn.close();
+            } catch (e) { console.error(e); }
             v21Conn = null;
         }
         if (v21Peer) {
-            v21Peer.destroy();
+            try {
+                v21Peer.destroy();
+            } catch (e) { console.error(e); }
             v21Peer = null;
         }
-        document.getElementById("v21-match-overlay").style.display = "none";
+        try {
+            document.getElementById("v21-match-overlay").style.display = "none";
+        } catch (e) { console.error(e); }
     }
 
     document.getElementById("btn-v21-quick").addEventListener("click", () => {
-        if (player.chips < 500) {
-            alert("マルチプレイの参加には、BET用チップが最低 500 枚必要です！");
-            return;
+        try {
+            if (player.chips < 500) {
+                alert("マルチプレイの参加には、BET用チップが最低 500 枚必要です！\n現在のチップ: " + player.chips);
+                return;
+            }
+            AudioSynth.play('click');
+            v21State.mode = 'quick';
+            startQuickMatchmaking();
+        } catch (e) {
+            alert("エラーが発生しました (Quick): " + e.message + "\n" + e.stack);
         }
-        AudioSynth.play('click');
-        v21State.mode = 'quick';
-        document.getElementById("v21-match-overlay").style.display = "block";
-        document.getElementById("v21-match-status").innerText = "接続サーバー初期化中...";
-        startQuickMatchmaking();
     });
 
     document.getElementById("btn-v21-cancel-match").addEventListener("click", () => {
-        AudioSynth.play('click');
-        cancelMatchmaking();
+        try {
+            AudioSynth.play('click');
+            cancelMatchmaking();
+        } catch (e) {
+            alert("エラーが発生しました (Cancel): " + e.message + "\n" + e.stack);
+        }
     });
 
     // Custom Room Make
     document.getElementById("btn-v21-create-room").addEventListener("click", () => {
-        const roomIdInput = document.getElementById("v21-room-id").value.trim();
-        if (!roomIdInput) {
-            alert("合言葉を入力してください。");
-            return;
-        }
-        if (player.chips < 500) {
-            alert("マルチプレイの参加には、BET用チップが最低 500 枚必要です！");
-            return;
-        }
-        AudioSynth.play('click');
-        v21State.mode = 'custom';
-        document.getElementById("v21-match-overlay").style.display = "block";
-        document.getElementById("v21-match-status").innerText = "カスタム部屋を作成中...";
-        
-        const targetId = `vocab_v21_custom_${roomIdInput}`;
-        const p = new Peer(targetId, peerConfig);
-        
-        p.on('open', () => {
-            v21Peer = p;
-            v21State.role = 'host';
-            document.getElementById("v21-match-status").innerText = `合言葉「${roomIdInput}」で対戦相手の入室を待機中...`;
+        try {
+            const roomIdInput = document.getElementById("v21-room-id").value.trim();
+            if (!roomIdInput) {
+                alert("合言葉を入力してください。");
+                return;
+            }
+            if (player.chips < 500) {
+                alert("マルチプレイの参加には、BET用チップが最低 500 枚必要です！\n現在のチップ: " + player.chips);
+                return;
+            }
+            AudioSynth.play('click');
+            cancelMatchmaking(); // Clean up previous peer connection before making new host
+            v21State.mode = 'custom';
+            document.getElementById("v21-match-overlay").style.display = "flex";
+            document.getElementById("v21-match-status").innerText = "カスタム部屋を作成中...";
             
-            p.on('connection', (c) => {
-                c.on('open', () => {
-                    v21Conn = c;
-                    setupConnectionHandlers();
-                    player.chips -= 500;
-                    saveLocalStorage();
-                    updateHeaderUI();
+            const targetId = `vocab_v21_custom_${roomIdInput}`;
+            const p = new Peer(targetId, peerConfig);
+            
+            p.on('open', () => {
+                v21Peer = p;
+                v21State.role = 'host';
+                document.getElementById("v21-match-status").innerText = `合言葉「${roomIdInput}」で対戦相手の入室を待機中...`;
+                
+                p.on('connection', (c) => {
+                    c.on('open', () => {
+                        v21Conn = c;
+                        setupConnectionHandlers();
+                        player.chips -= 500;
+                        saveLocalStorage();
+                        updateHeaderUI();
+                    });
                 });
             });
-        });
-        
-        p.on('error', (err) => {
-            p.destroy();
-            if (err.type === 'id-taken') {
-                alert("この合言葉の部屋は既に作成されています。");
-            } else {
-                alert("エラーが発生しました。");
-            }
-            cancelMatchmaking();
-        });
+            
+            p.on('error', (err) => {
+                p.destroy();
+                if (err.type === 'id-taken') {
+                    alert("この合言葉の部屋は既に作成されています。");
+                } else {
+                    alert("エラーが発生しました。");
+                }
+                cancelMatchmaking();
+            });
+        } catch (e) {
+            alert("エラーが発生しました (CreateRoom): " + e.message + "\n" + e.stack);
+        }
     });
 
     // Custom Room Join
     document.getElementById("btn-v21-join-room").addEventListener("click", () => {
-        const roomIdInput = document.getElementById("v21-room-id").value.trim();
-        if (!roomIdInput) {
-            alert("合言葉を入力してください。");
-            return;
-        }
-        if (player.chips < 500) {
-            alert("マルチプレイの参加には、BET用チップが最低 500 枚必要です！");
-            return;
-        }
-        AudioSynth.play('click');
-        v21State.mode = 'custom';
-        document.getElementById("v21-match-overlay").style.display = "block";
-        document.getElementById("v21-match-status").innerText = "カスタム部屋に接続中...";
-        
-        const targetId = `vocab_v21_custom_${roomIdInput}`;
-        connectToPeer(targetId).then(result => {
-            if (result) {
-                v21Peer = result.peer;
-                v21Conn = result.conn;
-                v21State.role = 'guest';
-                setupConnectionHandlers();
-                player.chips -= 500;
-                saveLocalStorage();
-                updateHeaderUI();
-                
-                v21Conn.send({
-                    type: 'handshake',
-                    name: studentNickname || "ゲスト",
-                    rating: player.rating || 1500
-                });
-            } else {
-                alert("部屋が見つからないか、満員です。");
-                cancelMatchmaking();
+        try {
+            const roomIdInput = document.getElementById("v21-room-id").value.trim();
+            if (!roomIdInput) {
+                alert("合言葉を入力してください。");
+                return;
             }
-        });
+            if (player.chips < 500) {
+                alert("マルチプレイの参加には、BET用チップが最低 500 枚必要です！\n現在のチップ: " + player.chips);
+                return;
+            }
+            AudioSynth.play('click');
+            cancelMatchmaking(); // Clean up previous connection
+            v21State.mode = 'custom';
+            document.getElementById("v21-match-overlay").style.display = "flex";
+            document.getElementById("v21-match-status").innerText = "カスタム部屋に接続中...";
+            
+            const targetId = `vocab_v21_custom_${roomIdInput}`;
+            connectToPeer(targetId).then(result => {
+                if (result) {
+                    v21Peer = result.peer;
+                    v21Conn = result.conn;
+                    v21State.role = 'guest';
+                    setupConnectionHandlers();
+                    player.chips -= 500;
+                    saveLocalStorage();
+                    updateHeaderUI();
+                    
+                    v21Conn.send({
+                        type: 'handshake',
+                        name: studentNickname || "ゲスト",
+                        rating: player.rating || 1500
+                    });
+                } else {
+                    alert("部屋が見つからないか、満員です。");
+                    cancelMatchmaking();
+                }
+            });
+        } catch (e) {
+            alert("エラーが発生しました (JoinRoom): " + e.message + "\n" + e.stack);
+        }
     });
 
     function setupConnectionHandlers() {
