@@ -1413,6 +1413,68 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        /* iPad Landscape & Desktop Layout Sizing and Optimizations */
+        .v21-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 0 16px;
+            box-sizing: border-box;
+        }
+        @media (min-width: 860px) {
+            /* Expand Blackjack container width on landscape screens */
+            .v21-container {
+                max-width: 1040px;
+            }
+            
+            /* Two-column split layout for game panel */
+            .v21-split-layout-grid {
+                display: grid !important;
+                grid-template-columns: 1fr 1.2fr;
+                gap: 24px;
+                align-items: start;
+                text-align: left;
+            }
+            .v21-left-col {
+                display: flex;
+                flex-direction: column;
+                gap: 14px;
+            }
+            .v21-right-col {
+                display: flex;
+                flex-direction: column;
+                gap: 14px;
+            }
+            
+            /* Center spelling and result panels with custom max-width */
+            #v21-spelling-panel, #v21-result-panel {
+                max-width: 600px;
+                margin: 16px auto 0 auto;
+                box-sizing: border-box;
+            }
+
+
+            /* Responsive Lobby Menu (Side-by-side Cards) */
+            .lobby-menu {
+                flex-direction: row;
+                gap: 20px;
+            }
+            .lobby-card {
+                flex: 1;
+                flex-direction: column;
+                text-align: center;
+                padding: 28px 20px;
+                height: 100%;
+                justify-content: center;
+            }
+            .lobby-card-icon {
+                width: 90px;
+                height: 90px;
+                font-size: 3rem;
+                margin-bottom: 8px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1878,7 +1940,7 @@
     <!-- 10. SCREEN: VOCABULARY BLACKJACK -->
     <!-- ============================================== -->
     <div id="screen-blackjack" class="screen" style="padding: 20px 0; overflow-y: auto;">
-        <div class="v21-container" style="max-width: 600px; margin: 0 auto; padding: 0 16px;">
+        <div class="v21-container">
             <!-- V21 Header -->
             <div class="v21-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.1);">
                 <button class="btn btn-secondary" id="btn-blackjack-back" style="min-height: 32px; padding: 4px 12px; font-size: 0.8rem; border-radius: 6px;">
@@ -1934,107 +1996,111 @@
             </div>
 
             <!-- 2. Main Gameboard Panel -->
-            <div id="v21-game-panel" style="display: none;">
-                <!-- Round / Score Info Banner -->
-                <div style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 10px 14px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 4px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <div id="v21-round-title" style="font-weight: bold; color: var(--accent-gold); font-size: 0.9rem;">ROUND 1 / 5</div>
-                        <div id="v21-spell-addon-indicator" style="font-size: 0.74rem; background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; border-radius: 4px; padding: 2px 6px;">スペル加算: OFF</div>
-                    </div>
-                    <!-- Scoreboard -->
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 4px;">
-                        <div style="text-align: left;">
-                            <span id="v21-player-name-label" style="font-size: 0.8rem; font-weight: bold;">YOU</span>
-                            <span id="v21-player-rating-label" style="font-size: 0.7rem; color: var(--text-muted);"> (1500)</span>
-                            <div id="v21-player-score-val" style="font-size: 1.1rem; font-weight: bold; color: var(--accent-gold);">0 pts</div>
+            <div id="v21-game-panel" class="v21-split-layout-grid" style="display: none;">
+                <div class="v21-left-col">
+                    <!-- Round / Score Info Banner -->
+                    <div style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 10px 14px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 4px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div id="v21-round-title" style="font-weight: bold; color: var(--accent-gold); font-size: 0.9rem;">ROUND 1 / 5</div>
+                            <div id="v21-spell-addon-indicator" style="font-size: 0.74rem; background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; border-radius: 4px; padding: 2px 6px;">スペル加算: OFF</div>
                         </div>
-                        <div style="font-size: 1.1rem; color: var(--text-muted); font-weight: bold;">VS</div>
-                        <div style="text-align: right;">
-                            <span id="v21-opponent-name-label" style="font-size: 0.8rem; font-weight: bold;">OPPONENT</span>
-                            <span id="v21-opponent-rating-label" style="font-size: 0.7rem; color: var(--text-muted);"> (1500)</span>
-                            <div id="v21-opponent-score-val" style="font-size: 1.1rem; font-weight: bold; color: var(--accent-gold);">0 pts</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Setup / Setting phase controls (Only shown to current turn leader) -->
-                <div id="v21-setup-controls" style="display: none; background: rgba(0,0,0,0.5); border: 1.5px solid var(--accent-gold); border-radius: 12px; padding: 14px; margin-bottom: 12px;">
-                    <div style="font-size: 0.84rem; font-weight: bold; color: var(--accent-gold); text-align: center; margin-bottom: 10px;">★ あなたの出題設定ターンです ★</div>
-                    
-                    <!-- Section selects (Double Slider) -->
-                    <div class="range-bet-container" style="display: flex; flex-direction: column; gap: 12px; width: 100%; margin: 15px 0; background: rgba(0, 0, 0, 0.25); padding: 14px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.05); box-sizing: border-box;">
-                        <label style="font-size: 0.78rem; color: var(--text-muted); display: block; text-align: center; margin: 0;">出題単語のID範囲</label>
-                        <div id="v21-double-slider-container" style="position: relative; height: 16px; width: 100%; display: flex; align-items: center; margin: 10px 0 15px 0; touch-action: none; cursor: pointer;">
-                            <!-- Slider track background -->
-                            <div style="position: absolute; height: 6px; width: 100%; background: rgba(255,255,255,0.1); border-radius: 3px; z-index: 1; pointer-events: none;"></div>
-                            <!-- Selected range fill -->
-                            <div id="v21-bet-slider-fill" style="position: absolute; height: 6px; background: var(--accent-gold); border-radius: 3px; z-index: 2; pointer-events: none; left: 0%; width: 5.82%;"></div>
-                            
-                            <!-- Overlapping range inputs -->
-                            <input type="range" id="v21-bet-start-slider" min="1" max="1700" value="1" style="position: absolute; width: 100%; height: 6px; background: none; pointer-events: none; -webkit-appearance: none; appearance: none; z-index: 3; outline: none; margin: 0; padding: 0;">
-                            <input type="range" id="v21-bet-end-slider" min="1" max="1700" value="100" style="position: absolute; width: 100%; height: 6px; background: none; pointer-events: none; -webkit-appearance: none; appearance: none; z-index: 4; outline: none; margin: 0; padding: 0;">
-                        </div>
-                        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.74rem;">
-                            <div style="display: flex; align-items: center; gap: 4px;">
-                                <span style="color: var(--text-muted);">開始:</span>
-                                <input type="number" id="v21-bet-start-num" min="1" max="1700" value="1" style="width: 58px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; color: var(--text-main); font-size: 0.76rem; padding: 4px 2px; text-align: center; font-weight: bold; -moz-appearance: textfield;">
+                        <!-- Scoreboard -->
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 4px;">
+                            <div style="text-align: left;">
+                                <span id="v21-player-name-label" style="font-size: 0.8rem; font-weight: bold;">YOU</span>
+                                <span id="v21-player-rating-label" style="font-size: 0.7rem; color: var(--text-muted);"> (1500)</span>
+                                <div id="v21-player-score-val" style="font-size: 1.1rem; font-weight: bold; color: var(--accent-gold);">0 pts</div>
                             </div>
-                            <div style="display: flex; align-items: center; gap: 4px;">
-                                <span style="color: var(--text-muted);">終了:</span>
-                                <input type="number" id="v21-bet-end-num" min="1" max="1700" value="100" style="width: 58px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; color: var(--text-main); font-size: 0.76rem; padding: 4px 2px; text-align: center; font-weight: bold; -moz-appearance: textfield;">
+                            <div style="font-size: 1.1rem; color: var(--text-muted); font-weight: bold;">VS</div>
+                            <div style="text-align: right;">
+                                <span id="v21-opponent-name-label" style="font-size: 0.8rem; font-weight: bold;">OPPONENT</span>
+                                <span id="v21-opponent-rating-label" style="font-size: 0.7rem; color: var(--text-muted);"> (1500)</span>
+                                <div id="v21-opponent-score-val" style="font-size: 1.1rem; font-weight: bold; color: var(--accent-gold);">0 pts</div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Spell Score add-on toggle -->
-                    <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 8px; margin-bottom: 12px;">
-                        <div>
-                            <div style="font-size: 0.8rem; font-weight: bold;">スペル得点加算</div>
-                            <div style="font-size: 0.64rem; color: var(--text-muted);">ON: スコア ＝ 文字数 ＋ (正解数×3点)<br>OFF: 21に近い方が勝利（スペル正解はチップのみ）</div>
+                    <!-- Setup / Setting phase controls (Only shown to current turn leader) -->
+                    <div id="v21-setup-controls" style="display: none; background: rgba(0,0,0,0.5); border: 1.5px solid var(--accent-gold); border-radius: 12px; padding: 14px; margin-bottom: 12px;">
+                        <div style="font-size: 0.84rem; font-weight: bold; color: var(--accent-gold); text-align: center; margin-bottom: 10px;">★ あなたの出題設定ターンです ★</div>
+                        
+                        <!-- Section selects (Double Slider) -->
+                        <div class="range-bet-container" style="display: flex; flex-direction: column; gap: 12px; width: 100%; margin: 15px 0; background: rgba(0, 0, 0, 0.25); padding: 14px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.05); box-sizing: border-box;">
+                            <label style="font-size: 0.78rem; color: var(--text-muted); display: block; text-align: center; margin: 0;">出題単語のID範囲</label>
+                            <div id="v21-double-slider-container" style="position: relative; height: 16px; width: 100%; display: flex; align-items: center; margin: 10px 0 15px 0; touch-action: none; cursor: pointer;">
+                                <!-- Slider track background -->
+                                <div style="position: absolute; height: 6px; width: 100%; background: rgba(255,255,255,0.1); border-radius: 3px; z-index: 1; pointer-events: none;"></div>
+                                <!-- Selected range fill -->
+                                <div id="v21-bet-slider-fill" style="position: absolute; height: 6px; background: var(--accent-gold); border-radius: 3px; z-index: 2; pointer-events: none; left: 0%; width: 5.82%;"></div>
+                                
+                                <!-- Overlapping range inputs -->
+                                <input type="range" id="v21-bet-start-slider" min="1" max="1700" value="1" style="position: absolute; width: 100%; height: 6px; background: none; pointer-events: none; -webkit-appearance: none; appearance: none; z-index: 3; outline: none; margin: 0; padding: 0;">
+                                <input type="range" id="v21-bet-end-slider" min="1" max="1700" value="100" style="position: absolute; width: 100%; height: 6px; background: none; pointer-events: none; -webkit-appearance: none; appearance: none; z-index: 4; outline: none; margin: 0; padding: 0;">
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.74rem;">
+                                <div style="display: flex; align-items: center; gap: 4px;">
+                                    <span style="color: var(--text-muted);">開始:</span>
+                                    <input type="number" id="v21-bet-start-num" min="1" max="1700" value="1" style="width: 58px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; color: var(--text-main); font-size: 0.76rem; padding: 4px 2px; text-align: center; font-weight: bold; -moz-appearance: textfield;">
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 4px;">
+                                    <span style="color: var(--text-muted);">終了:</span>
+                                    <input type="number" id="v21-bet-end-num" min="1" max="1700" value="100" style="width: 58px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; color: var(--text-main); font-size: 0.76rem; padding: 4px 2px; text-align: center; font-weight: bold; -moz-appearance: textfield;">
+                                </div>
+                            </div>
                         </div>
-                        <label class="switch" style="width: 44px; height: 22px; position: relative; display: inline-block;">
-                            <input type="checkbox" id="v21-toggle-spell-addon" style="opacity: 0; width: 0; height: 0;">
-                            <span class="slider round" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255,255,255,0.2); transition: .3s; border-radius: 22px;"></span>
-                        </label>
-                    </div>
 
-                    <button class="btn btn-gold" id="btn-v21-confirm-settings" style="width: 100%; padding: 10px; font-weight: bold;">
-                        決定して単語を生成
-                    </button>
-                </div>
-
-                <!-- Turn Banner Status / Waiting info -->
-                <div id="v21-turn-banner" style="text-align: center; background: rgba(255,255,255,0.05); padding: 8px; border-radius: 8px; font-size: 0.82rem; font-weight: bold; margin-bottom: 12px; border-left: 3px solid var(--accent-gold);">
-                    対戦相手の設定決定を待っています...
-                </div>
-
-                <!-- Interactive Board Game Green Felt -->
-                <div style="background: radial-gradient(circle, #0f4626 0%, #032b14 80%, #01180b 100%); border: 3px solid #d4af37; border-radius: 14px; padding: 12px 10px; box-shadow: inset 0 0 20px rgba(0,0,0,0.6); position: relative;">
-                    <!-- Timer and Progress Tracker Bar -->
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding: 0 4px;">
-                        <div style="display: flex; align-items: center; gap: 4px;">
-                            <span style="font-size: 0.74rem; color: rgba(255,255,255,0.7);">合計文字数:</span>
-                            <span id="v21-current-total-score" style="font-size: 0.94rem; font-weight: bold; color: var(--accent-gold);">? (選択中)</span>
+                        <!-- Spell Score add-on toggle -->
+                        <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 8px; margin-bottom: 12px;">
+                            <div>
+                                <div style="font-size: 0.8rem; font-weight: bold;">スペル得点加算</div>
+                                <div style="font-size: 0.64rem; color: var(--text-muted);">ON: スコア ＝ 文字数 ＋ (正解数×3点)<br>OFF: 21に近い方が勝利（スペル正解はチップのみ）</div>
+                            </div>
+                            <label class="switch" style="width: 44px; height: 22px; position: relative; display: inline-block;">
+                                <input type="checkbox" id="v21-toggle-spell-addon" style="opacity: 0; width: 0; height: 0;">
+                                <span class="slider round" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255,255,255,0.2); transition: .3s; border-radius: 22px;"></span>
+                            </label>
                         </div>
-                        <div id="v21-turn-timer" style="font-size: 0.84rem; font-weight: bold; color: #f87171; background: rgba(0,0,0,0.4); padding: 2px 8px; border-radius: 12px;">⏱️ 30s</div>
+
+                        <button class="btn btn-gold" id="btn-v21-confirm-settings" style="width: 100%; padding: 10px; font-weight: bold;">
+                            決定して単語を生成
+                        </button>
                     </div>
 
-                    <!-- Progress Bar towards 21 -->
-                    <div style="width: 100%; height: 10px; background: rgba(0,0,0,0.4); border-radius: 5px; overflow: hidden; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.15);">
-                        <div id="v21-score-progress" style="width: 0%; height: 100%; background: linear-gradient(90deg, #10b981 0%, #fbbf24 80%, #f59e0b 100%); transition: width 0.3s ease;"></div>
-                    </div>
-
-                    <!-- Cards Container -->
-                    <div id="v21-cards-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; min-height: 200px;">
-                        <!-- 10 Word Cards injected here -->
+                    <!-- Turn Banner Status / Waiting info -->
+                    <div id="v21-turn-banner" style="text-align: center; background: rgba(255,255,255,0.05); padding: 8px; border-radius: 8px; font-size: 0.82rem; font-weight: bold; margin-bottom: 12px; border-left: 3px solid var(--accent-gold);">
+                        対戦相手の設定決定を待っています...
                     </div>
                 </div>
 
-                <!-- Bottom Controls Area -->
-                <div style="display: flex; gap: 12px; margin-top: 12px; justify-content: center;">
-                    <button class="btn btn-gold" id="btn-v21-lockin" disabled style="min-width: 160px; font-weight: bold; opacity: 0.5; padding: 12px 24px; font-size: 1rem;">
-                        🔒 LOCK IN (手札確定)
-                    </button>
+                <div class="v21-right-col">
+                    <!-- Interactive Board Game Green Felt -->
+                    <div style="background: radial-gradient(circle, #0f4626 0%, #032b14 80%, #01180b 100%); border: 3px solid #d4af37; border-radius: 14px; padding: 12px 10px; box-shadow: inset 0 0 20px rgba(0,0,0,0.6); position: relative;">
+                        <!-- Timer and Progress Tracker Bar -->
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding: 0 4px;">
+                            <div style="display: flex; align-items: center; gap: 4px;">
+                                <span style="font-size: 0.74rem; color: rgba(255,255,255,0.7);">合計文字数:</span>
+                                <span id="v21-current-total-score" style="font-size: 0.94rem; font-weight: bold; color: var(--accent-gold);">? (選択中)</span>
+                            </div>
+                            <div id="v21-turn-timer" style="font-size: 0.84rem; font-weight: bold; color: #f87171; background: rgba(0,0,0,0.4); padding: 2px 8px; border-radius: 12px;">⏱️ 30s</div>
+                        </div>
+
+                        <!-- Progress Bar towards 21 -->
+                        <div style="width: 100%; height: 10px; background: rgba(0,0,0,0.4); border-radius: 5px; overflow: hidden; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.15);">
+                            <div id="v21-score-progress" style="width: 0%; height: 100%; background: linear-gradient(90deg, #10b981 0%, #fbbf24 80%, #f59e0b 100%); transition: width 0.3s ease;"></div>
+                        </div>
+
+                        <!-- Cards Container -->
+                        <div id="v21-cards-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; min-height: 200px;">
+                            <!-- 10 Word Cards injected here -->
+                        </div>
+                    </div>
+
+                    <!-- Bottom Controls Area -->
+                    <div style="display: flex; gap: 12px; margin-top: 12px; justify-content: center;">
+                        <button class="btn btn-gold" id="btn-v21-lockin" disabled style="min-width: 160px; font-weight: bold; opacity: 0.5; padding: 12px 24px; font-size: 1rem;">
+                            🔒 LOCK IN (手札確定)
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -2063,23 +2129,21 @@
             </div>
         </div>
 
-        <!-- 4. Round / Match Result Modal Overlay -->
-        <div id="v21-result-modal" class="modal-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); z-index: 2100; justify-content: center; align-items: center; overflow-y: auto; padding: 20px 10px; box-sizing: border-box;">
-            <div class="modal-content" style="width: 95%; max-width: 480px; background: #111827; border: 2.5px solid var(--accent-gold); border-radius: 16px; padding: 24px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.8); margin: auto; box-sizing: border-box;">
-                <h2 id="v21-modal-result-title" style="font-size: 1.6rem; color: var(--accent-gold); margin: 0 0 12px 0;">ROUND 1 判定</h2>
-                
-                <div id="v21-modal-result-details" style="font-size: 0.86rem; line-height: 1.6; margin-bottom: 16px; text-align: left; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
-                    <!-- Detailed calculation of this round's results -->
-                </div>
-
-                <div id="v21-modal-overall-standings" style="font-size: 0.86rem; line-height: 1.6; margin-bottom: 16px; text-align: left; background: rgba(212,175,55,0.08); padding: 12px; border-radius: 8px; border: 1px solid var(--accent-gold);">
-                    <!-- Overall game standings / Round scores history -->
-                </div>
-                
-                <button class="btn btn-gold" id="btn-v21-modal-continue" style="width: 100%; padding: 12px; font-weight: bold; font-size: 1rem;">
-                    次のラウンドへ
-                </button>
+        <!-- 4. Round / Match Result Panel (In-page) -->
+        <div id="v21-result-panel" style="display: none; background: #111827; border: 2.5px solid var(--accent-gold); border-radius: 16px; padding: 24px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.7); margin-top: 12px; box-sizing: border-box;">
+            <h2 id="v21-panel-result-title" style="font-size: 1.8rem; color: var(--accent-gold); margin: 0 0 16px 0; font-weight: 800; letter-spacing: 1px;">ROUND 1 判定</h2>
+            
+            <div id="v21-panel-result-details" style="font-size: 0.96rem; line-height: 1.7; margin-bottom: 20px; text-align: left; background: rgba(255,255,255,0.05); padding: 18px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08);">
+                <!-- Detailed calculation of this round's results -->
             </div>
+
+            <div id="v21-panel-overall-standings" style="font-size: 0.96rem; line-height: 1.7; margin-bottom: 24px; text-align: left; background: rgba(212,175,55,0.08); padding: 18px; border-radius: 10px; border: 1px solid var(--accent-gold);">
+                <!-- Overall game standings / Round scores history -->
+            </div>
+            
+            <button class="btn btn-gold" id="btn-v21-panel-continue" style="width: 100%; padding: 14px; font-weight: bold; font-size: 1.1rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(212, 175, 55, 0.2);">
+                次のラウンドへ
+            </button>
         </div>
     </div>
 
@@ -3200,6 +3264,7 @@
                 gamePanel.style.display = "none";
                 document.getElementById("v21-spelling-panel").style.display = "none";
                 document.getElementById("v21-match-overlay").style.display = "none";
+                document.getElementById("v21-result-panel").style.display = "none";
                 if (lobbyPanel) lobbyPanel.style.display = "block";
                 
                 AudioSynth.play('click');
@@ -4251,6 +4316,7 @@
         document.getElementById("v21-game-panel").style.display = "none";
         document.getElementById("v21-spelling-panel").style.display = "none";
         document.getElementById("v21-match-overlay").style.display = "none";
+        document.getElementById("v21-result-panel").style.display = "none";
         
         initV21DoubleSliders();
     };
@@ -4741,6 +4807,10 @@
     }
 
     function setupPvPRound() {
+        document.getElementById("v21-game-panel").style.display = "block";
+        document.getElementById("v21-spelling-panel").style.display = "none";
+        document.getElementById("v21-result-panel").style.display = "none";
+
         const isHostChooser = (v21State.round % 2 === 1);
         const amIChooser = (isHostChooser && v21State.role === 'host') || (!isHostChooser && v21State.role === 'guest');
         
@@ -4833,6 +4903,10 @@
     }
 
     function startV21Round() {
+        document.getElementById("v21-game-panel").style.display = "block";
+        document.getElementById("v21-spelling-panel").style.display = "none";
+        document.getElementById("v21-result-panel").style.display = "none";
+
         document.getElementById("v21-setup-controls").style.display = "none";
         document.getElementById("v21-spell-addon-indicator").innerText = `スペル加算: ${v21State.spellAddon ? "ON" : "OFF"}`;
         
@@ -5326,9 +5400,9 @@
         showRoundResultModal(rMsg);
     }
 
-    document.getElementById("btn-v21-modal-continue").addEventListener("click", () => {
+    document.getElementById("btn-v21-panel-continue").addEventListener("click", () => {
         AudioSynth.play('click');
-        document.getElementById("v21-result-modal").style.display = "none";
+        document.getElementById("v21-result-panel").style.display = "none";
         
         if (v21State.mode === 'solo') {
             // Stay in game screen and show setup controls for the next round
@@ -5348,12 +5422,14 @@
             updateScoreboard();
         } else {
             if (v21State.round < 5) {
+                v21State.round++;
                 if (v21State.role === 'host') {
-                    v21State.round++;
                     setupPvPRound();
                 } else {
+                    document.getElementById("v21-game-panel").style.display = "block";
                     document.getElementById("v21-setup-controls").style.display = "none";
                     document.getElementById("v21-turn-banner").innerText = `相手 (${v21State.opponentName}) が出題設定を行っています...`;
+                    updateScoreboard();
                 }
             } else {
                 if (v21State.role === 'host') {
@@ -5422,8 +5498,8 @@
     }
 
     function showRoundResultModal(message) {
-        document.getElementById("v21-modal-result-title").innerText = `ROUND ${v21State.round} 結果`;
-        document.getElementById("v21-modal-result-details").innerHTML = message;
+        document.getElementById("v21-panel-result-title").innerText = `ROUND ${v21State.round} 結果`;
+        document.getElementById("v21-panel-result-details").innerHTML = message;
         
         let historyHTML = "<strong>【獲得スコア履歴】</strong><br>";
         if (v21State.mode === 'solo') {
@@ -5434,35 +5510,35 @@
             });
             historyHTML += `<br><strong>累計合計スコア:</strong><br>ホスト ${v21State.playerTotalScore} 点 vs ゲスト ${v21State.opponentTotalScore} 点`;
         }
-        document.getElementById("v21-modal-overall-standings").innerHTML = historyHTML;
+        document.getElementById("v21-panel-overall-standings").innerHTML = historyHTML;
         
-        document.getElementById("btn-v21-modal-continue").innerText = (v21State.round < 5 || v21State.mode === 'solo') ? "次のラウンドへ" : "最終結果を集計する";
-        document.getElementById("v21-result-modal").style.display = "flex";
+        document.getElementById("btn-v21-panel-continue").innerText = (v21State.round < 5 || v21State.mode === 'solo') ? "次のラウンドへ" : "最終結果を集計する";
+        document.getElementById("v21-result-panel").style.display = "block";
     }
 
     function showFinalMatchResultModal(winnerName, ratingDiff) {
-        document.getElementById("v21-modal-result-title").innerText = `🏆 最終結果発表 🏆`;
+        document.getElementById("v21-panel-result-title").innerText = `🏆 最終結果発表 🏆`;
         
         let outcomeMsg = `【対戦勝者】: <strong>${winnerName}</strong><br><br>`;
         outcomeMsg += `ホスト合計: ${v21State.playerTotalScore} 点<br>`;
         outcomeMsg += `ゲスト合計: ${v21State.opponentTotalScore} 点<br><br>`;
         outcomeMsg += `あなたのレート変動: <strong>${ratingDiff >= 0 ? "+" : ""}${ratingDiff}</strong> (現在のレート: ${player.rating})`;
         
-        document.getElementById("v21-modal-result-details").innerHTML = outcomeMsg;
-        document.getElementById("v21-modal-overall-standings").innerHTML = "対戦が完了しました。チップ配当とレーティングが保存されました！";
+        document.getElementById("v21-panel-result-details").innerHTML = outcomeMsg;
+        document.getElementById("v21-panel-overall-standings").innerHTML = "対戦が完了しました。チップ配当とレーティングが保存されました！";
         
-        const continueBtn = document.getElementById("btn-v21-modal-continue");
+        const continueBtn = document.getElementById("btn-v21-panel-continue");
         continueBtn.innerText = "ロビーに戻る";
         
         const newBtn = continueBtn.cloneNode(true);
         continueBtn.parentNode.replaceChild(newBtn, continueBtn);
         newBtn.addEventListener("click", () => {
             AudioSynth.play('click');
-            document.getElementById("v21-result-modal").style.display = "none";
+            document.getElementById("v21-result-panel").style.display = "none";
             initBlackjackGame();
         });
         
-        document.getElementById("v21-result-modal").style.display = "flex";
+        document.getElementById("v21-result-panel").style.display = "block";
     }
 
     function updateScoreboard() {
