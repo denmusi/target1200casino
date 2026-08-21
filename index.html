@@ -2372,6 +2372,38 @@
         setupEventListeners();
     });
 
+    function getRatingForNickname(nickname) {
+        const ratingsMapStr = localStorage.getItem('vocab_v21_nick_ratings');
+        let ratingsMap = {};
+        if (ratingsMapStr) {
+            try {
+                ratingsMap = JSON.parse(ratingsMapStr);
+            } catch (e) {
+                console.error("Failed to parse ratings map:", e);
+            }
+        }
+        const key = nickname ? nickname.trim() : "GUEST";
+        if (ratingsMap[key] === undefined) {
+            ratingsMap[key] = 1500;
+        }
+        return ratingsMap[key];
+    }
+
+    function saveRatingForNickname(nickname, rating) {
+        const ratingsMapStr = localStorage.getItem('vocab_v21_nick_ratings');
+        let ratingsMap = {};
+        if (ratingsMapStr) {
+            try {
+                ratingsMap = JSON.parse(ratingsMapStr);
+            } catch (e) {
+                console.error("Failed to parse ratings map:", e);
+            }
+        }
+        const key = nickname ? nickname.trim() : "GUEST";
+        ratingsMap[key] = rating;
+        localStorage.setItem('vocab_v21_nick_ratings', JSON.stringify(ratingsMap));
+    }
+
     function loadLocalStorage() {
         const savedPlayer = localStorage.getItem("vocab_casino_player");
         if (savedPlayer) {
@@ -2398,9 +2430,13 @@
                 console.error("Invalid player state stored, resetting.");
             }
         }
+        // Load nickname-specific rating
+        player.rating = getRatingForNickname(studentNickname);
     }
 
     function saveLocalStorage() {
+        // Save current rating to nickname mapping
+        saveRatingForNickname(studentNickname, player.rating || 1500);
         localStorage.setItem("vocab_casino_player", JSON.stringify(player));
     }
 
@@ -2499,6 +2535,10 @@
         studentClass = localStorage.getItem('vocab_student_class') || "";
         studentNumber = localStorage.getItem('vocab_student_number') || "";
         studentNickname = localStorage.getItem('vocab_student_nickname') || "";
+        
+        // Load nickname-specific rating
+        player.rating = getRatingForNickname(studentNickname);
+        updateHeaderUI();
         
         loadBookmarks();
         updateStudentBadge();
@@ -2668,6 +2708,10 @@
         localStorage.setItem('vocab_student_class', cls);
         localStorage.setItem('vocab_student_number', num);
         localStorage.setItem('vocab_student_nickname', nick);
+
+        // Keep current rating, save it under the new nickname, and update UI
+        saveLocalStorage();
+        updateHeaderUI();
 
         updateStudentBadge();
         showToast("生徒情報を保存しました。");
@@ -4009,6 +4053,19 @@
     // =======================================================
     let v21Peer = null;
     let v21Conn = null;
+    const peerConfig = {
+        debug: 1,
+        config: {
+            iceServers: [
+                { urls: 'stun:stun.l.google.com:19302' },
+                { urls: 'stun:stun1.l.google.com:19302' },
+                { urls: 'stun:stun2.l.google.com:19302' },
+                { urls: 'stun:stun3.l.google.com:19302' },
+                { urls: 'stun:stun4.l.google.com:19302' },
+                { urls: 'stun:stun.services.mozilla.com' }
+            ]
+        }
+    };
     window.v21State = {
         mode: 'solo', // 'solo' | 'quick' | 'custom'
         role: 'host', // 'host' | 'guest'
@@ -4152,9 +4209,9 @@
 
     function connectToPeer(targetId) {
         return new Promise((resolve) => {
-            const tempPeer = new Peer({ debug: 1 });
+            const tempPeer = new Peer(peerConfig);
             tempPeer.on('open', () => {
-                const conn = tempPeer.connect(targetId, { serialization: 'json', timeout: 5000 });
+                const conn = tempPeer.connect(targetId, { timeout: 5000 });
                 conn.on('open', () => {
                     resolve({ peer: tempPeer, conn });
                 });
@@ -4254,7 +4311,7 @@
         
         function tryHost() {
             const targetId = `vocab_v21_t${tier}_r${slot}`;
-            const p = new Peer(targetId, { debug: 1 });
+            const p = new Peer(targetId, peerConfig);
             
             p.on('open', () => {
                 v21Peer = p;
@@ -4341,7 +4398,7 @@
         document.getElementById("v21-match-status").innerText = "カスタム部屋を作成中...";
         
         const targetId = `vocab_v21_custom_${roomIdInput}`;
-        const p = new Peer(targetId, { debug: 1 });
+        const p = new Peer(targetId, peerConfig);
         
         p.on('open', () => {
             v21Peer = p;
@@ -4421,7 +4478,7 @@
         });
         v21Conn.on('error', (err) => {
             console.error("Connection error:", err);
-            alert("接続エラーが発生しました。");
+            alert("接続エラーが発生しました。\nエラー内容: " + (err.message || err.type || err));
             initBlackjackGame();
         });
         
