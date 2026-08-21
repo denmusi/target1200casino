@@ -992,7 +992,9 @@
 
         /* Double Range Slider Styling */
         #range-bet-start-slider::-webkit-slider-thumb,
-        #range-bet-end-slider::-webkit-slider-thumb {
+        #range-bet-end-slider::-webkit-slider-thumb,
+        #v21-bet-start-slider::-webkit-slider-thumb,
+        #v21-bet-end-slider::-webkit-slider-thumb {
             pointer-events: auto;
             -webkit-appearance: none;
             appearance: none;
@@ -1006,11 +1008,15 @@
             transition: transform 0.1s ease;
         }
         #range-bet-start-slider::-webkit-slider-thumb:hover,
-        #range-bet-end-slider::-webkit-slider-thumb:hover {
+        #range-bet-end-slider::-webkit-slider-thumb:hover,
+        #v21-bet-start-slider::-webkit-slider-thumb:hover,
+        #v21-bet-end-slider::-webkit-slider-thumb:hover {
             transform: scale(1.25);
         }
         #range-bet-start-slider::-moz-range-thumb,
-        #range-bet-end-slider::-moz-range-thumb {
+        #range-bet-end-slider::-moz-range-thumb,
+        #v21-bet-start-slider::-moz-range-thumb,
+        #v21-bet-end-slider::-moz-range-thumb {
             pointer-events: auto;
             width: 16px;
             height: 16px;
@@ -1022,7 +1028,9 @@
             transition: transform 0.1s ease;
         }
         #range-bet-start-slider::-moz-range-thumb:hover,
-        #range-bet-end-slider::-moz-range-thumb:hover {
+        #range-bet-end-slider::-moz-range-thumb:hover,
+        #v21-bet-start-slider::-moz-range-thumb:hover,
+        #v21-bet-end-slider::-moz-range-thumb:hover {
             transform: scale(1.25);
         }
 
@@ -1703,7 +1711,7 @@
                         </div>
                         
                         <!-- Double Range Slider Container -->
-                        <div style="position: relative; height: 16px; width: 100%; display: flex; align-items: center; margin: 4px 0;">
+                        <div id="slots-double-slider-container" style="position: relative; height: 16px; width: 100%; display: flex; align-items: center; margin: 4px 0; touch-action: none; cursor: pointer;">
                             <!-- Slider track background -->
                             <div style="position: absolute; height: 6px; width: 100%; background: rgba(255,255,255,0.1); border-radius: 3px; z-index: 1; pointer-events: none;"></div>
                             <!-- Selected range fill -->
@@ -1956,18 +1964,23 @@
                     <!-- Section selects (Double Slider) -->
                     <div class="range-bet-container" style="display: flex; flex-direction: column; gap: 12px; width: 100%; margin: 15px 0; background: rgba(0, 0, 0, 0.25); padding: 14px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.05); box-sizing: border-box;">
                         <label style="font-size: 0.78rem; color: var(--text-muted); display: block; text-align: center; margin: 0;">出題単語のID範囲</label>
-                        <div style="position: relative; width: 100%; height: 6px; margin: 10px 0 15px 0; background: rgba(255,255,255,0.1); border-radius: 3px;">
+                        <div id="v21-double-slider-container" style="position: relative; height: 16px; width: 100%; display: flex; align-items: center; margin: 10px 0 15px 0; touch-action: none; cursor: pointer;">
+                            <!-- Slider track background -->
+                            <div style="position: absolute; height: 6px; width: 100%; background: rgba(255,255,255,0.1); border-radius: 3px; z-index: 1; pointer-events: none;"></div>
+                            <!-- Selected range fill -->
                             <div id="v21-bet-slider-fill" style="position: absolute; height: 6px; background: var(--accent-gold); border-radius: 3px; z-index: 2; pointer-events: none; left: 0%; width: 5.82%;"></div>
+                            
+                            <!-- Overlapping range inputs -->
                             <input type="range" id="v21-bet-start-slider" min="1" max="1700" value="1" style="position: absolute; width: 100%; height: 6px; background: none; pointer-events: none; -webkit-appearance: none; appearance: none; z-index: 3; outline: none; margin: 0; padding: 0;">
                             <input type="range" id="v21-bet-end-slider" min="1" max="1700" value="100" style="position: absolute; width: 100%; height: 6px; background: none; pointer-events: none; -webkit-appearance: none; appearance: none; z-index: 4; outline: none; margin: 0; padding: 0;">
                         </div>
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.74rem;">
                             <div style="display: flex; align-items: center; gap: 4px;">
-                                <span style="font-size: 0.72rem; color: var(--text-muted);">開始:</span>
+                                <span style="color: var(--text-muted);">開始:</span>
                                 <input type="number" id="v21-bet-start-num" min="1" max="1700" value="1" style="width: 58px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; color: var(--text-main); font-size: 0.76rem; padding: 4px 2px; text-align: center; font-weight: bold; -moz-appearance: textfield;">
                             </div>
                             <div style="display: flex; align-items: center; gap: 4px;">
-                                <span style="font-size: 0.72rem; color: var(--text-muted);">終了:</span>
+                                <span style="color: var(--text-muted);">終了:</span>
                                 <input type="number" id="v21-bet-end-num" min="1" max="1700" value="100" style="width: 58px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; color: var(--text-main); font-size: 0.76rem; padding: 4px 2px; text-align: center; font-weight: bold; -moz-appearance: textfield;">
                             </div>
                         </div>
@@ -3031,12 +3044,68 @@
         alert(`高次元への転生が完了しました！\n獲得したプレステージコイン: 💎 ${coinsGained.toLocaleString()}\n新しい宇宙での挑戦が始まります！`);
     }
 
+    function makeDoubleSliderTouchFriendly(containerId, startSlider, endSlider, updateCallback) {
+        const container = document.getElementById(containerId);
+        if (!container || !startSlider || !endSlider) return;
+
+        let activeSlider = null;
+
+        function handlePointer(e) {
+            const rect = container.getBoundingClientRect();
+            const offsetX = e.clientX - rect.left;
+            const percentage = Math.max(0, Math.min(1, offsetX / rect.width));
+            
+            const minVal = parseInt(startSlider.min) || 1;
+            const maxVal = parseInt(startSlider.max) || 1700;
+            const targetValue = Math.round(minVal + percentage * (maxVal - minVal));
+            
+            const startVal = parseInt(startSlider.value);
+            const endVal = parseInt(endSlider.value);
+            
+            if (!activeSlider) {
+                const distToStart = Math.abs(startVal - targetValue);
+                const distToEnd = Math.abs(endVal - targetValue);
+                if (distToStart < distToEnd) {
+                    activeSlider = startSlider;
+                } else if (distToStart > distToEnd) {
+                    activeSlider = endSlider;
+                } else {
+                    activeSlider = (targetValue < startVal) ? startSlider : endSlider;
+                }
+            }
+            
+            activeSlider.value = targetValue;
+            updateCallback(activeSlider);
+        }
+
+        container.addEventListener('pointerdown', (e) => {
+            if (e.button !== 0) return; // Only respond to primary clicks
+            activeSlider = null;
+            container.setPointerCapture(e.pointerId);
+            handlePointer(e);
+            
+            function onPointerMove(ev) {
+                handlePointer(ev);
+            }
+            
+            function onPointerUp(ev) {
+                container.releasePointerCapture(ev.pointerId);
+                container.removeEventListener('pointermove', onPointerMove);
+                container.removeEventListener('pointerup', onPointerUp);
+                activeSlider = null;
+            }
+            
+            container.addEventListener('pointermove', onPointerMove);
+            container.addEventListener('pointerup', onPointerUp);
+        });
+    }
+
     // Setup Navigation and event listeners
     function setupEventListeners() {
         // Initialize Idiom Toggle state from player object
         const idiomToggle = document.getElementById("toggle-include-idioms");
         if (idiomToggle) {
-            idiomToggle.checked = player.includeIdioms;
+            idiomToggle.checked = player.includeIdioms !== undefined ? player.includeIdioms : true;
             idiomToggle.addEventListener("change", (e) => {
                 player.includeIdioms = e.target.checked;
                 saveLocalStorage();
@@ -3152,6 +3221,19 @@
             });
             endNum.addEventListener("change", (e) => {
                 updateRangeBet(betStartId, e.target.value, 'end');
+            });
+
+            // Touch-friendly drag/swipe support
+            makeDoubleSliderTouchFriendly("slots-double-slider-container", startSlider, endSlider, (activeSlider) => {
+                if (activeSlider === startSlider) {
+                    startSlider.style.zIndex = "5";
+                    endSlider.style.zIndex = "4";
+                    updateRangeBet(startSlider.value, betEndId, 'start');
+                } else {
+                    endSlider.style.zIndex = "5";
+                    startSlider.style.zIndex = "4";
+                    updateRangeBet(betStartId, endSlider.value, 'end');
+                }
             });
         }
 
@@ -4160,6 +4242,12 @@
 
         if (!startSlider) return;
 
+        // Initialize sliders from player object
+        startSlider.value = player.betStartId || 1;
+        endSlider.value = player.betEndId || 100;
+        startNum.value = player.betStartId || 1;
+        endNum.value = player.betEndId || 100;
+
         function updateV21Sliders() {
             let startVal = parseInt(startSlider.value);
             let endVal = parseInt(endSlider.value);
@@ -4214,16 +4302,31 @@
         startNum.addEventListener("change", updateV21FromNums);
         endNum.addEventListener("change", updateV21FromNums);
 
+        // Touch-friendly drag/swipe support for Blackjack
+        makeDoubleSliderTouchFriendly("v21-double-slider-container", startSlider, endSlider, (activeSlider) => {
+            if (activeSlider === startSlider) {
+                startSlider.style.zIndex = "5";
+                endSlider.style.zIndex = "4";
+            } else {
+                endSlider.style.zIndex = "5";
+                startSlider.style.zIndex = "4";
+            }
+            updateV21Sliders();
+        });
+
         updateV21Sliders();
     }
 
     function getV21WordsPool(minId, maxId) {
-        let pool = allWords.filter(w => w.id >= minId && w.id <= maxId && /^[a-zA-Z]+$/.test(w.en));
+        // Blackjack strictly excludes idioms (no spaces or hyphens)
+        const testRegex = /^[a-zA-Z]+$/;
+
+        let pool = allWords.filter(w => w.id >= minId && w.id <= maxId && testRegex.test(w.en));
         let offset = 1;
         while (pool.length < 10 && (minId - offset >= 1 || maxId + offset <= 1700)) {
             const left = Math.max(1, minId - offset);
             const right = Math.min(1700, maxId + offset);
-            pool = allWords.filter(w => w.id >= left && w.id <= right && /^[a-zA-Z]+$/.test(w.en));
+            pool = allWords.filter(w => w.id >= left && w.id <= right && testRegex.test(w.en));
             offset++;
         }
         return pool;
@@ -4656,14 +4759,9 @@
         v21State.spellAddon = spellAddon;
         
         if (v21State.mode === 'solo') {
-            const betAmt = prompt("BETするチップ数を入力してください:", currentBet);
-            const betVal = parseInt(betAmt);
-            if (isNaN(betVal) || betVal <= 0) {
-                alert("正しいBET額を入力してください。");
-                return;
-            }
+            const betVal = 500;
             if (betVal > player.chips) {
-                alert("チップが不足しています！");
+                alert("チップが不足しています！\n現在のチップ: " + player.chips + "\nソロプレイの参加には 500 チップが必要です。");
                 return;
             }
             player.chips -= betVal;
@@ -4903,9 +5001,22 @@
         
         const cleanLen = word.en.length;
         for (let i = 0; i < cleanLen; i++) {
+            const char = word.en[i];
             const box = document.createElement("div");
             box.className = "v21-letter-box";
-            box.innerText = "";
+            if (char === " ") {
+                box.innerText = " ";
+                box.classList.add("space-box");
+                box.style.background = "transparent";
+                box.style.border = "none";
+                box.style.color = "transparent";
+            } else if (char === "-") {
+                box.innerText = "-";
+                box.classList.add("hyphen-box");
+                box.classList.add("filled");
+            } else {
+                box.innerText = "";
+            }
             boxesGrid.appendChild(box);
         }
         
@@ -4916,11 +5027,19 @@
         
         textInput.oninput = () => {
             const val = textInput.value.toUpperCase();
+            // Clean list of typed characters (ignoring spaces/hyphens to handle flexible inputs)
+            const cleanInputChars = val.replace(/[\s\-]/g, '').split('');
             const boxes = boxesGrid.querySelectorAll(".v21-letter-box");
+            let cleanIdx = 0;
             boxes.forEach((box, i) => {
-                if (i < val.length) {
-                    box.innerText = val[i];
+                const char = word.en[i];
+                if (char === " " || char === "-") {
+                    return; // keep space/hyphen rendering intact
+                }
+                if (cleanIdx < cleanInputChars.length) {
+                    box.innerText = cleanInputChars[cleanIdx];
                     box.classList.add("filled");
+                    cleanIdx++;
                 } else {
                     box.innerText = "";
                     box.classList.remove("filled");
@@ -4952,8 +5071,11 @@
         const inputVal = document.getElementById("v21-spell-input-text").value.trim().toLowerCase();
         const correctVal = word.en.toLowerCase();
         
+        const inputValClean = inputVal.replace(/[\s\-]/g, '');
+        const correctValClean = correctVal.replace(/[\s\-]/g, '');
+        
         let correct = false;
-        if (!isSkip && inputVal === correctVal) {
+        if (!isSkip && (inputVal === correctVal || inputValClean === correctValClean)) {
             correct = true;
             v21State.spellingCorrectCount++;
             AudioSynth.play('win');
