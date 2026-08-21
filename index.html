@@ -4637,9 +4637,6 @@
                     c.on('open', () => {
                         v21Conn = c;
                         setupConnectionHandlers();
-                        player.chips -= 500;
-                        saveLocalStorage();
-                        updateHeaderUI();
                     });
                 });
             });
@@ -4695,10 +4692,6 @@
 
     document.getElementById("btn-v21-quick").addEventListener("click", () => {
         try {
-            if (player.chips < 500) {
-                alert("マルチプレイの参加には、BET用チップが最低 500 枚必要です！\n現在のチップ: " + player.chips);
-                return;
-            }
             AudioSynth.play('click');
             v21State.mode = 'quick';
             startQuickMatchmaking();
@@ -4736,10 +4729,6 @@
                 alert("合言葉を入力してください。");
                 return;
             }
-            if (player.chips < 500) {
-                alert("マルチプレイの参加には、BET用チップが最低 500 枚必要です！\n現在のチップ: " + player.chips);
-                return;
-            }
             AudioSynth.play('click');
             document.getElementById("v21-pw-modal").style.display = "none";
             cancelMatchmaking(); // Clean up previous peer connection before making new host
@@ -4759,9 +4748,6 @@
                     c.on('open', () => {
                         v21Conn = c;
                         setupConnectionHandlers();
-                        player.chips -= 500;
-                        saveLocalStorage();
-                        updateHeaderUI();
                     });
                 });
             });
@@ -4788,10 +4774,6 @@
                 alert("合言葉を入力してください。");
                 return;
             }
-            if (player.chips < 500) {
-                alert("マルチプレイの参加には、BET用チップが最低 500 枚必要です！\n現在のチップ: " + player.chips);
-                return;
-            }
             AudioSynth.play('click');
             document.getElementById("v21-pw-modal").style.display = "none";
             cancelMatchmaking(); // Clean up previous connection
@@ -4806,9 +4788,6 @@
                     v21Conn = result.conn;
                     v21State.role = 'guest';
                     setupConnectionHandlers();
-                    player.chips -= 500;
-                    saveLocalStorage();
-                    updateHeaderUI();
                     
                     v21Conn.send({
                         type: 'handshake',
@@ -4925,7 +4904,6 @@
                 break;
             case 'match_complete':
                 player.rating = packet.data.myNewRating;
-                player.chips += packet.data.guestPotPayout;
                 saveLocalStorage();
                 updateHeaderUI();
                 showFinalMatchResultModal(packet.data.winnerName, packet.data.ratingDiff);
@@ -4977,16 +4955,6 @@
         v21State.spellAddon = spellAddon;
         
         if (v21State.mode === 'solo') {
-            const betVal = 500;
-            if (betVal > player.chips) {
-                alert("チップが不足しています！\n現在のチップ: " + player.chips + "\nソロプレイの参加には 500 チップが必要です。");
-                return;
-            }
-            player.chips -= betVal;
-            v21State.currentBet = betVal;
-            saveLocalStorage();
-            updateHeaderUI();
-            
             const pool = getV21WordsPool(startId, endId);
             const shuffled = [...pool].sort(() => Math.random() - 0.5);
             v21State.words = shuffled.slice(0, 10);
@@ -5398,50 +5366,30 @@
         const playerScore = getV21RoundPoints(playerWord, playerSpell, v21State.spellAddon);
         const dealerScore = getV21RoundPoints(dealerWord, dealerSpell, v21State.spellAddon);
         
-        v21State.playerTotalScore = playerScore;
-        v21State.opponentTotalScore = dealerScore;
+        v21State.playerTotalScore += playerScore;
+        v21State.opponentTotalScore += dealerScore;
         
         let msg = "";
-        let win = false;
-        let push = false;
-        
         if (playerWord > 21) {
-            msg = `バースト (${playerWord} 文字)！ ディーラーの勝ちです。`;
+            msg = `バースト (${playerWord} 文字)！ ディーラーはこのラウンド ${dealerScore} 点です。`;
         } else if (dealerWord > 21) {
-            msg = `ディーラーバースト (${dealerWord} 文字)！ あなたの勝ちです！`;
-            win = true;
+            msg = `ディーラーバースト (${dealerWord} 文字)！ あなたはこのラウンド ${playerScore} 点です。`;
         } else if (playerScore > dealerScore) {
-            msg = `あなた: ${playerScore} 点 vs ディーラー: ${dealerScore} 点。あなたの勝ちです！`;
-            win = true;
+            msg = `あなた ${playerScore} 点 vs ディーラー ${dealerScore} 点。このラウンドはあなたの勝ち！`;
         } else if (playerScore < dealerScore) {
-            msg = `ディーラー: ${dealerScore} 点 vs あなた: ${playerScore} 点。ディーラーの勝ちです。`;
+            msg = `ディーラー ${dealerScore} 点 vs あなた ${playerScore} 点。このラウンドはディーラーの勝ち。`;
         } else {
             msg = `スコア ${playerScore} 点で引き分け (Push) です。`;
-            push = true;
-        }
-        
-        let chipsChange = 0;
-        if (win) {
-            const mult = (playerWord === 21) ? 2.5 : 2.0;
-            chipsChange = Math.floor(v21State.currentBet * mult);
-            player.chips += chipsChange;
-        } else if (push) {
-            chipsChange = v21State.currentBet;
-            player.chips += chipsChange;
         }
         
         let spellBonusMsg = "";
         if (!v21State.spellAddon) {
             const correctSpells = v21State.playerRoundSpellScore;
             const size = v21State.playerSelectedIds.length;
-            let bonus = correctSpells * 20;
             if (correctSpells === size && size > 0) {
-                bonus += 100;
-                spellBonusMsg = `✨ PERFECT! スペル全問正解ボーナス！ (+100チップ) `;
-            }
-            if (bonus > 0) {
-                player.chips += bonus;
-                spellBonusMsg += `📝 スペル正解報酬: ${correctSpells}問正解 (+${bonus}チップ)`;
+                spellBonusMsg = `✨ PERFECT! スペル全問正解！`;
+            } else if (size > 0) {
+                spellBonusMsg = `📝 スペル正解: ${correctSpells} / ${size} 問`;
             }
         }
         
@@ -5494,13 +5442,6 @@
         
         let rMsg = `ホスト: ${hostPts}点 (文字数:${hostWord}, スペル:${hostSpell})<br>ゲスト: ${guestPts}点 (文字数:${guestWord}, スペル:${guestSpell})`;
         
-        if (!v21State.spellAddon) {
-            const hostSize = v21State.playerSelectedIds.length;
-            let hostBonus = hostSpell * 20;
-            if (hostSpell === hostSize && hostSize > 0) hostBonus += 100;
-            if (hostBonus > 0) player.chips += hostBonus;
-        }
-        
         saveLocalStorage();
         updateHeaderUI();
         
@@ -5523,23 +5464,21 @@
 
     document.getElementById("btn-v21-panel-continue").addEventListener("click", () => {
         AudioSynth.play('click');
+        
+        if (document.getElementById("btn-v21-panel-continue").innerText === "ロビーに戻る") {
+            initBlackjackGame();
+            return;
+        }
+        
         document.getElementById("v21-result-panel").style.display = "none";
         
         if (v21State.mode === 'solo') {
-            // Stay in game screen and show setup controls for the next round
-            showV21Panel("v21-setup-panel");
-            document.getElementById("v21-setup-controls").style.display = "block";
-            document.getElementById("v21-turn-banner").style.display = "none";
-            
-            v21State.round = 1;
-            v21State.playerTotalScore = 0;
-            v21State.opponentTotalScore = 0;
-            v21State.playerLocked = false;
-            v21State.opponentLocked = false;
-            v21State.opponentRoundSpellScore = undefined;
-            v21State.playerRoundSpellScore = undefined;
-            
-            updateScoreboard();
+            if (v21State.round < 5) {
+                v21State.round++;
+                setupSoloRound();
+            } else {
+                concludeSoloMatch();
+            }
         } else {
             if (v21State.round < 5) {
                 v21State.round++;
@@ -5556,6 +5495,48 @@
             }
         }
     });
+
+    function setupSoloRound() {
+        showV21Panel("v21-setup-panel");
+        document.getElementById("v21-setup-controls").style.display = "block";
+        document.getElementById("v21-turn-banner").style.display = "none";
+        
+        v21State.playerLocked = false;
+        v21State.opponentLocked = false;
+        v21State.playerSelectedIds = [];
+        v21State.opponentSelectedIds = [];
+        v21State.opponentSelectedCount = 0;
+        v21State.playerRoundSpellScore = undefined;
+        v21State.opponentRoundSpellScore = undefined;
+        
+        updateScoreboard();
+        
+        document.getElementById("v21-cards-grid").innerHTML = "";
+        document.getElementById("v21-score-progress").style.width = "0%";
+        document.getElementById("v21-current-total-score").innerText = "?";
+        document.getElementById("btn-v21-lockin").disabled = true;
+        document.getElementById("btn-v21-lockin").style.opacity = "0.5";
+    }
+
+    function concludeSoloMatch() {
+        const playerTotal = v21State.playerTotalScore;
+        const dealerTotal = v21State.opponentTotalScore;
+        
+        let winnerName = "";
+        
+        if (playerTotal > dealerTotal) {
+            winnerName = "あなたの勝ち！";
+        } else if (playerTotal < dealerTotal) {
+            winnerName = "ディーラーの勝ち";
+        } else {
+            winnerName = "引き分け";
+        }
+        
+        saveLocalStorage();
+        updateHeaderUI();
+        
+        showFinalMatchResultModal(winnerName, 0);
+    }
 
     function concludePvPMatch() {
         const hostTotal = v21State.playerTotalScore;
@@ -5574,7 +5555,6 @@
             const delta = Math.max(3, diff);
             hostDelta = delta;
             guestDelta = -delta;
-            player.chips += 1000;
         } else if (guestTotal > hostTotal) {
             winnerName = v21State.opponentName;
             const diff = Math.round(20 + (hostRating - guestRating) / 10);
@@ -5582,7 +5562,6 @@
             hostDelta = -delta;
             guestDelta = delta;
         } else {
-            player.chips += 500;
             if (hostRating < guestRating) {
                 hostDelta = 5;
                 guestDelta = 0;
@@ -5608,7 +5587,7 @@
                 winnerName,
                 myNewRating: newGuestRating,
                 ratingDiff: guestDelta,
-                guestPotPayout: (guestTotal > hostTotal) ? 1000 : (guestTotal === hostTotal ? 500 : 0)
+                guestPotPayout: 0
             }
         });
         
@@ -5631,7 +5610,7 @@
         document.getElementById("v21-panel-overall-standings").innerHTML = historyHTML;
         
         const continueBtn = document.getElementById("btn-v21-panel-continue");
-        continueBtn.innerText = (v21State.round < 5 || v21State.mode === 'solo') ? "次のラウンドへ" : "最終結果を集計する";
+        continueBtn.innerText = (v21State.round < 5) ? "次のラウンドへ" : "最終結果を集計する";
         continueBtn.disabled = false;
         continueBtn.style.opacity = "1";
         showV21Panel("v21-result-panel");
@@ -5640,38 +5619,50 @@
     function showFinalMatchResultModal(winnerName, ratingDiff) {
         document.getElementById("v21-panel-result-title").innerText = `🏆 最終結果発表 🏆`;
         
-        let outcomeMsg = `【対戦勝者】: <strong>${winnerName}</strong><br><br>`;
-        outcomeMsg += `ホスト合計: ${v21State.playerTotalScore} 点<br>`;
-        outcomeMsg += `ゲスト合計: ${v21State.opponentTotalScore} 点<br><br>`;
-        outcomeMsg += `あなたのレート変動: <strong>${ratingDiff >= 0 ? "+" : ""}${ratingDiff}</strong> (現在のレート: ${player.rating})`;
+        let outcomeMsg = "";
+        if (v21State.mode === 'solo') {
+            outcomeMsg += `【対戦結果】: <strong>${winnerName}</strong><br><br>`;
+            outcomeMsg += `あなた合計: ${v21State.playerTotalScore} 点<br>`;
+            outcomeMsg += `ディーラー合計: ${v21State.opponentTotalScore} 点<br><br>`;
+            outcomeMsg += `獲得チップ: <strong>+${ratingDiff}</strong> チップ`;
+            document.getElementById("v21-panel-overall-standings").innerHTML = "ソロプレイが完了しました！";
+        } else {
+            outcomeMsg += `【対戦勝者】: <strong>${winnerName}</strong><br><br>`;
+            outcomeMsg += `ホスト合計: ${v21State.playerTotalScore} 点<br>`;
+            outcomeMsg += `ゲスト合計: ${v21State.opponentTotalScore} 点<br><br>`;
+            outcomeMsg += `あなたのレート変動: <strong>${ratingDiff >= 0 ? "+" : ""}${ratingDiff}</strong> (現在のレート: ${player.rating})`;
+            document.getElementById("v21-panel-overall-standings").innerHTML = "対戦が完了しました。チップ配当とレーティングが保存されました！";
+        }
         
         document.getElementById("v21-panel-result-details").innerHTML = outcomeMsg;
-        document.getElementById("v21-panel-overall-standings").innerHTML = "対戦が完了しました。チップ配当とレーティングが保存されました！";
         
         const continueBtn = document.getElementById("btn-v21-panel-continue");
         continueBtn.innerText = "ロビーに戻る";
-        
-        const newBtn = continueBtn.cloneNode(true);
-        continueBtn.parentNode.replaceChild(newBtn, continueBtn);
-        newBtn.addEventListener("click", () => {
-            AudioSynth.play('click');
-            initBlackjackGame();
-        });
+        continueBtn.disabled = false;
+        continueBtn.style.opacity = "1";
         
         showV21Panel("v21-result-panel");
     }
 
     function updateScoreboard() {
-        const isHost = (v21State.role === 'host');
-        document.getElementById("v21-player-name-label").innerText = isHost ? "YOU (HOST)" : "YOU (GUEST)";
-        document.getElementById("v21-player-rating-label").innerText = ` (${player.rating})`;
-        
-        document.getElementById("v21-opponent-name-label").innerText = v21State.opponentName;
-        document.getElementById("v21-opponent-rating-label").innerText = ` (${v21State.opponentRating})`;
-        
-        document.getElementById("v21-player-score-val").innerText = `${v21State.playerTotalScore} pts`;
-        document.getElementById("v21-opponent-score-val").innerText = `${v21State.opponentTotalScore} pts`;
-        document.getElementById("v21-round-title").innerText = v21State.mode === 'solo' ? "VS DEALER" : `ROUND ${v21State.round} / 5`;
+        if (v21State.mode === 'solo') {
+            document.getElementById("v21-player-name-label").innerText = "YOU";
+            document.getElementById("v21-player-rating-label").innerText = "";
+            document.getElementById("v21-opponent-name-label").innerText = "DEALER";
+            document.getElementById("v21-opponent-rating-label").innerText = "";
+            document.getElementById("v21-player-score-val").innerText = `${v21State.playerTotalScore} pts`;
+            document.getElementById("v21-opponent-score-val").innerText = `${v21State.opponentTotalScore} pts`;
+            document.getElementById("v21-round-title").innerText = `VS DEALER (ROUND ${v21State.round}/5)`;
+        } else {
+            const isHost = (v21State.role === 'host');
+            document.getElementById("v21-player-name-label").innerText = isHost ? "YOU (HOST)" : "YOU (GUEST)";
+            document.getElementById("v21-player-rating-label").innerText = ` (${player.rating})`;
+            document.getElementById("v21-opponent-name-label").innerText = v21State.opponentName;
+            document.getElementById("v21-opponent-rating-label").innerText = ` (${v21State.opponentRating})`;
+            document.getElementById("v21-player-score-val").innerText = `${v21State.playerTotalScore} pts`;
+            document.getElementById("v21-opponent-score-val").innerText = `${v21State.opponentTotalScore} pts`;
+            document.getElementById("v21-round-title").innerText = `ROUND ${v21State.round} / 5`;
+        }
     }
 </script>
 </body>
