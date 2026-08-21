@@ -4335,11 +4335,13 @@
                 document.getElementById("v21-match-status").innerText = `対戦相手を待機中... (ルーム ${tier}-${slot})`;
                 
                 p.on('connection', (c) => {
-                    v21Conn = c;
-                    setupConnectionHandlers();
-                    player.chips -= 500;
-                    saveLocalStorage();
-                    updateHeaderUI();
+                    c.on('open', () => {
+                        v21Conn = c;
+                        setupConnectionHandlers();
+                        player.chips -= 500;
+                        saveLocalStorage();
+                        updateHeaderUI();
+                    });
                 });
             });
             
@@ -4422,11 +4424,13 @@
             document.getElementById("v21-match-status").innerText = `合言葉「${roomIdInput}」で対戦相手の入室を待機中...`;
             
             p.on('connection', (c) => {
-                v21Conn = c;
-                setupConnectionHandlers();
-                player.chips -= 500;
-                saveLocalStorage();
-                updateHeaderUI();
+                c.on('open', () => {
+                    v21Conn = c;
+                    setupConnectionHandlers();
+                    player.chips -= 500;
+                    saveLocalStorage();
+                    updateHeaderUI();
+                });
             });
         });
         
