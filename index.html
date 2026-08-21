@@ -4871,9 +4871,11 @@
                 v21State.roundHistory = [];
                 setupPvPRound();
             } else {
-                document.getElementById("v21-setup-controls").style.display = "none";
-                document.getElementById("v21-turn-banner").style.display = "block";
-                document.getElementById("v21-turn-banner").innerText = "対戦相手の設定決定を待っています...";
+                v21State.round = 1;
+                v21State.playerTotalScore = 0;
+                v21State.opponentTotalScore = 0;
+                v21State.roundHistory = [];
+                setupPvPRound();
             }
         }, 1000);
     }
@@ -5541,18 +5543,15 @@
         } else {
             if (v21State.round < 5) {
                 v21State.round++;
-                if (v21State.role === 'host') {
-                    setupPvPRound();
-                } else {
-                    showV21Panel("v21-setup-panel");
-                    document.getElementById("v21-setup-controls").style.display = "none";
-                    document.getElementById("v21-turn-banner").style.display = "block";
-                    document.getElementById("v21-turn-banner").innerText = `相手 (${v21State.opponentName}) が出題設定を行っています...`;
-                    updateScoreboard();
-                }
+                setupPvPRound();
             } else {
                 if (v21State.role === 'host') {
                     concludePvPMatch();
+                } else {
+                    const btn = document.getElementById("btn-v21-panel-continue");
+                    btn.innerText = "ホストの集計を待っています...";
+                    btn.disabled = true;
+                    btn.style.opacity = "0.7";
                 }
             }
         }
@@ -5631,7 +5630,10 @@
         }
         document.getElementById("v21-panel-overall-standings").innerHTML = historyHTML;
         
-        document.getElementById("btn-v21-panel-continue").innerText = (v21State.round < 5 || v21State.mode === 'solo') ? "次のラウンドへ" : "最終結果を集計する";
+        const continueBtn = document.getElementById("btn-v21-panel-continue");
+        continueBtn.innerText = (v21State.round < 5 || v21State.mode === 'solo') ? "次のラウンドへ" : "最終結果を集計する";
+        continueBtn.disabled = false;
+        continueBtn.style.opacity = "1";
         showV21Panel("v21-result-panel");
     }
 
