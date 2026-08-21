@@ -3179,12 +3179,34 @@
         });
 
         document.getElementById("btn-blackjack-back").addEventListener("click", () => {
-            if (window.blackjackState && window.blackjackState.isPlaying) {
-                if (!confirm("ブラックジャックの対戦中ですが、終了してロビーに戻りますか？（BETしたコインは失われます）")) {
-                    return;
+            const gamePanel = document.getElementById("v21-game-panel");
+            const lobbyPanel = document.getElementById("v21-lobby-panel");
+            
+            // If they are currently in a game/setup panel, return to the Blackjack lobby first
+            if (gamePanel && gamePanel.style.display === "block") {
+                if (v21State.mode !== 'solo') {
+                    if (!confirm("通信対戦中ですが、終了してロビーに戻りますか？（レートが減少する場合があります）")) {
+                        return;
+                    }
+                    cancelMatchmaking();
+                    if (v21Peer) {
+                        v21Peer.destroy();
+                        v21Peer = null;
+                        v21Conn = null;
+                    }
                 }
-                window.blackjackState.isPlaying = false;
+                
+                // Return to mode selection screen inside Blackjack
+                gamePanel.style.display = "none";
+                document.getElementById("v21-spelling-panel").style.display = "none";
+                document.getElementById("v21-match-overlay").style.display = "none";
+                if (lobbyPanel) lobbyPanel.style.display = "block";
+                
+                AudioSynth.play('click');
+                return;
             }
+            
+            // Otherwise return to the slots screen
             AudioSynth.play('click');
             switchScreen("screen-lobby");
         });
@@ -5309,7 +5331,21 @@
         document.getElementById("v21-result-modal").style.display = "none";
         
         if (v21State.mode === 'solo') {
-            initBlackjackGame();
+            // Stay in game screen and show setup controls for the next round
+            document.getElementById("v21-lobby-panel").style.display = "none";
+            document.getElementById("v21-game-panel").style.display = "block";
+            document.getElementById("v21-setup-controls").style.display = "block";
+            document.getElementById("v21-turn-banner").innerText = "ラウンドの範囲・スペル加算を設定してください。";
+            
+            v21State.round = 1;
+            v21State.playerTotalScore = 0;
+            v21State.opponentTotalScore = 0;
+            v21State.playerLocked = false;
+            v21State.opponentLocked = false;
+            v21State.opponentRoundSpellScore = undefined;
+            v21State.playerRoundSpellScore = undefined;
+            
+            updateScoreboard();
         } else {
             if (v21State.round < 5) {
                 if (v21State.role === 'host') {
