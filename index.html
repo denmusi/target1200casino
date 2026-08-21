@@ -4522,6 +4522,9 @@
                 v21State.opponentName = packet.name;
                 v21State.opponentRating = packet.rating;
                 updateScoreboard();
+                if (v21State.currentChooser === 'opponent') {
+                    document.getElementById("v21-turn-banner").innerText = `相手 (${v21State.opponentName}) が出題設定を行っています...`;
+                }
                 break;
             case 'settings':
                 v21State.betStartId = packet.data.betStartId;
@@ -4567,8 +4570,8 @@
     }
 
     function setupPvPRound() {
-        const isGuestChooser = (v21State.round % 2 === 1);
-        const amIChooser = (isGuestChooser && v21State.role === 'guest') || (!isGuestChooser && v21State.role === 'host');
+        const isHostChooser = (v21State.round % 2 === 1);
+        const amIChooser = (isHostChooser && v21State.role === 'host') || (!isHostChooser && v21State.role === 'guest');
         
         v21State.currentChooser = amIChooser ? 'player' : 'opponent';
         
