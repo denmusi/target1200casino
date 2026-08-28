@@ -1569,7 +1569,7 @@
     <!-- 2. CASINO LOBBY (INITIAL SCREEN) -->
     <!-- ============================================== -->
     <div id="screen-lobby" class="screen active">
-        <h1 class="logo-title" style="margin-bottom: 2px;">Casino Lobby</h1>
+        <h1 class="logo-title" id="lobby-title" style="margin-bottom: 2px; cursor: pointer; user-select: none;">Casino Lobby</h1>
         <p class="subtitle">挑戦するゲームを選択してください</p>
 
         <div class="lobby-menu">
@@ -3422,8 +3422,73 @@
         });
     }
 
+    function triggerSecretResetMenu() {
+        AudioSynth.play('buzz');
+        const confirmReset = confirm("【警告：開発者用初期化メニュー】\nすべてのゲームデータを初期化し、セーブデータを消去しますか？\n（獲得したプレステージコイン、購入済みの強化、ハイスコアなどすべてのデータが完全に削除されます。）");
+        if (confirmReset) {
+            const finalConfirm = confirm("本当に初期化しますか？この操作は取り消せません。");
+            if (finalConfirm) {
+                // Clear localStorage
+                localStorage.removeItem(LOCAL_STORAGE_KEY);
+                // Reset player object to defaults
+                player = {
+                    chips: 1000,
+                    highscore: 1000,
+                    prestigeCoins: 0,
+                    items: {
+                        soda: 1,
+                        watch: 2
+                    },
+                    upgrades: {
+                        symbolsLvl: 0,
+                        timerLvl: 0,
+                        comboBonusLvl: 0
+                    },
+                    prestigeUpgrades: {
+                        vipMultiplier: 0,
+                        superSoda: 0,
+                        hyperWatch: 0,
+                        upgradeBooster: 0,
+                        chipDouble: 0,
+                        startingChips: 0,
+                        comboMax: 0,
+                        comboShield: 0,
+                        luck: 0
+                    }
+                };
+                saveLocalStorage();
+                updateHeaderUI();
+                if (typeof updateShopUpgradeUI === 'function') {
+                    updateShopUpgradeUI();
+                }
+                alert("すべてのゲームデータが初期化されました。ページをリロードします。");
+                location.reload();
+            }
+        }
+    }
+
     // Setup Navigation and event listeners
     function setupEventListeners() {
+        // Casino Lobby title easter egg for secret reset menu
+        let lobbyClickCount = 0;
+        let lobbyClickTimeout = null;
+        const lobbyTitle = document.getElementById("lobby-title");
+        if (lobbyTitle) {
+            lobbyTitle.addEventListener("click", () => {
+                lobbyClickCount++;
+                if (lobbyClickTimeout) clearTimeout(lobbyClickTimeout);
+                lobbyClickTimeout = setTimeout(() => {
+                    lobbyClickCount = 0;
+                }, 2000);
+
+                if (lobbyClickCount >= 30) {
+                    lobbyClickCount = 0;
+                    clearTimeout(lobbyClickTimeout);
+                    triggerSecretResetMenu();
+                }
+            });
+        }
+
         // Initialize Idiom Toggle state from player object
         const idiomToggle = document.getElementById("toggle-include-idioms");
         if (idiomToggle) {
