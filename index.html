@@ -1616,10 +1616,7 @@
                 <h3 class="shop-panel-title">🛒 Casino Shop</h3>
                 <!-- Shop Tabs Header -->
                 <div class="shop-tabs" style="display: flex; border-bottom: 2px solid rgba(255,255,255,0.1); margin-bottom: 15px;">
-                    <button class="shop-tab active" id="tab-btn-items" onclick="switchShopTab('items')" style="flex: 1; padding: 8px 4px; background: none; border: none; font-weight: bold; cursor: pointer; font-size: 0.76rem; border-bottom: 3px solid transparent; transition: all 0.2s;">
-                        🍹 アイテム
-                    </button>
-                    <button class="shop-tab" id="tab-btn-upgrades" onclick="switchShopTab('upgrades')" style="flex: 1; padding: 8px 4px; background: none; border: none; font-weight: bold; cursor: pointer; font-size: 0.76rem; border-bottom: 3px solid transparent; transition: all 0.2s;">
+                    <button class="shop-tab active" id="tab-btn-upgrades" onclick="switchShopTab('upgrades')" style="flex: 1; padding: 8px 4px; background: none; border: none; font-weight: bold; cursor: pointer; font-size: 0.76rem; border-bottom: 3px solid transparent; transition: all 0.2s;">
                         ⚡ 通常強化
                     </button>
                     <button class="shop-tab" id="tab-btn-prestige" onclick="switchShopTab('prestige')" style="flex: 1; padding: 8px 4px; background: none; border: none; font-weight: bold; cursor: pointer; font-size: 0.76rem; border-bottom: 3px solid transparent; transition: all 0.2s;">
@@ -1630,44 +1627,8 @@
                     </button>
                 </div>
 
-                <!-- Items Tab Content -->
-                <div id="shop-tab-content-items" class="shop-list">
-                    <!-- Soda -->
-                    <div class="shop-item-card">
-                        <div class="shop-item-info">
-                            <div class="shop-item-icon">🍹</div>
-                            <div class="shop-item-details">
-                                <h4>ラッキー・ソーダ (Lucky Soda)</h4>
-                                <p>クイズの選択肢を1つ減らす。</p>
-                                <p style="color: var(--accent-gold); font-size:0.68rem; margin-top:2px;">所持数: <span id="shop-count-soda">0</span></p>
-                            </div>
-                        </div>
-                        <button class="shop-buy-btn" onclick="buyItem('soda')">
-                            購入
-                            <span class="price">🪙 300</span>
-                        </button>
-                    </div>
-
-                    <!-- Hourglass -->
-                    <div class="shop-item-card">
-                        <div class="shop-item-info">
-                            <div class="shop-item-icon">⏳</div>
-                            <div class="shop-item-details">
-                                <h4>タイム・ウォッチ (Time Watch)</h4>
-                                <p>クイズの制限時間を2倍に引き伸ばす。</p>
-                                <p style="color: var(--accent-gold); font-size:0.68rem; margin-top:2px;">所持数: <span id="shop-count-watch">0</span></p>
-                            </div>
-                        </div>
-                        <button class="shop-buy-btn" onclick="buyItem('watch')">
-                            購入
-                            <span class="price">🪙 200</span>
-                        </button>
-                    </div>
-
-                </div>
-
                 <!-- Upgrades Tab Content -->
-                <div id="shop-tab-content-upgrades" style="display: none;" class="shop-list">
+                <div id="shop-tab-content-upgrades" class="shop-list">
                     <!-- Multi-buy toggle buttons -->
                     <div class="shop-multibuy-container">
                         <button class="shop-multibuy-btn active" onclick="setUpgradeBuyCount(1)">x1</button>
@@ -1697,7 +1658,7 @@
                             <div class="shop-item-icon">⏱️</div>
                             <div class="shop-item-details">
                                 <h4>タイムボーナス強化 (Timer Bonus)</h4>
-                                <p>スロット停止までの解答時間ボーナス倍率を各段階+0.5x加算する。</p>
+                                <p>スロット停止までの解答時間ボーナス倍率をレベルごとに+25%強化する。</p>
                                 <p style="color: var(--accent-gold); font-size:0.68rem; margin-top:2px;">レベル: <span id="shop-lvl-timer">0</span></p>
                             </div>
                         </div>
@@ -1732,7 +1693,7 @@
                             <div class="shop-item-icon">👑</div>
                             <div class="shop-item-details">
                                 <h4>VIPグローバルマルチプライヤー</h4>
-                                <p>スロットの配当結果に永久に+100%の乗算補正を加算する。</p>
+                                <p>スロットの配当結果に永久に+100%の乗算補正を加算する（最大Lv30）。</p>
                                 <p style="color: var(--accent-gold); font-size:0.68rem; margin-top:2px;">レベル: <span id="shop-lvl-prestige-vip">0</span></p>
                             </div>
                         </div>
@@ -1742,45 +1703,13 @@
                         </button>
                     </div>
 
-                    <!-- Super Soda -->
-                    <div class="shop-item-card">
-                        <div class="shop-item-info">
-                            <div class="shop-item-icon">🍹</div>
-                            <div class="shop-item-details">
-                                <h4>スーパー・ソーダ (Super Soda)</h4>
-                                <p>ラッキーソーダ使用時、選択肢を3択から2択にするのではなく、2つ除外して1択（答えのみ）にする。</p>
-                                <p style="color: var(--accent-gold); font-size:0.72rem; margin-top:2px;">状態: <span id="shop-lvl-prestige-soda">未所持</span></p>
-                            </div>
-                        </div>
-                        <button class="shop-buy-btn" id="btn-buy-prestige-soda" onclick="buyPrestigeUpgrade('soda')">
-                            購入
-                            <span class="price" style="color: #60a5fa;">💎 5</span>
-                        </button>
-                    </div>
-
-                    <!-- Hyper Watch -->
-                    <div class="shop-item-card">
-                        <div class="shop-item-info">
-                            <div class="shop-item-icon">⏳</div>
-                            <div class="shop-item-details">
-                                <h4>ハイパー・ウォッチ (Hyper Watch)</h4>
-                                <p>解答の標準制限時間を+15秒延長する（通常15秒 → 30秒）。</p>
-                                <p style="color: var(--accent-gold); font-size:0.72rem; margin-top:2px;">状態: <span id="shop-lvl-prestige-watch">未所持</span></p>
-                            </div>
-                        </div>
-                        <button class="shop-buy-btn" id="btn-buy-prestige-watch" onclick="buyPrestigeUpgrade('watch')">
-                            購入
-                            <span class="price" style="color: #60a5fa;">💎 3</span>
-                        </button>
-                    </div>
-
                     <!-- Super Upgrade Booster -->
                     <div class="shop-item-card">
                         <div class="shop-item-info">
                             <div class="shop-item-icon">⚡</div>
                             <div class="shop-item-details">
                                 <h4>超強化ブースター (Super Booster)</h4>
-                                <p>通常強化（配当倍率・タイム）の効果をレベルごとに+50%強化する。</p>
+                                <p>通常強化（配当倍率・タイム）の効果をレベルごとに+50%強化する（最大Lv10）。</p>
                                 <p style="color: var(--accent-gold); font-size:0.68rem; margin-top:2px;">レベル: <span id="shop-lvl-prestige-booster">0</span></p>
                             </div>
                         </div>
@@ -1796,7 +1725,7 @@
                             <div class="shop-item-icon">💰</div>
                             <div class="shop-item-details">
                                 <h4>全体のチップ獲得量×2</h4>
-                                <p>スロットでの獲得チップ総量を永続的に2倍（レベルごとに累積して2倍、4倍、8倍...）にする。</p>
+                                <p>スロットでの獲得チップ総量を永続的に2倍（レベルごとに累積して2倍、4倍...）にする（最大Lv5）。</p>
                                 <p style="color: var(--accent-gold); font-size:0.68rem; margin-top:2px;">レベル: <span id="shop-lvl-prestige-chipdouble">0</span></p>
                             </div>
                         </div>
@@ -1812,7 +1741,7 @@
                             <div class="shop-item-icon">🚀</div>
                             <div class="shop-item-details">
                                 <h4>初期チップ増量 (Starting Capital)</h4>
-                                <p>転生時の初期チップをレベルごとに+2,000チップ増量した状態でスタートする（最大Lv10）。</p>
+                                <p>転生時の初期チップをレベルごとに+2,000チップ増量した状態でスタートする（最大Lv5）。</p>
                                 <p style="color: var(--accent-gold); font-size:0.68rem; margin-top:2px;">レベル: <span id="shop-lvl-prestige-startingChips">0</span></p>
                             </div>
                         </div>
@@ -1828,29 +1757,13 @@
                             <div class="shop-item-icon">🧩</div>
                             <div class="shop-item-details">
                                 <h4>最大コンボ制限解放 (Max Combo Cap)</h4>
-                                <p>コンボシステムを有効にし、最大コンボ数上限をLv1で3、以降レベルごとに+1する（最大Lv5）。</p>
+                                <p>コンボシステムを有効にし、最大コンボ数上限をLv1で3、以降レベルごとに+1する（最大Lv3）。</p>
                                 <p style="color: var(--accent-gold); font-size:0.68rem; margin-top:2px;">レベル: <span id="shop-lvl-prestige-comboMax">0</span></p>
                             </div>
                         </div>
                         <button class="shop-buy-btn" id="btn-buy-prestige-comboMax" onclick="buyPrestigeUpgrade('comboMax')">
                             購入
-                            <span class="price" style="color: #60a5fa;" id="shop-price-prestige-comboMax">💎 2</span>
-                        </button>
-                    </div>
-
-                    <!-- Combo Shield -->
-                    <div class="shop-item-card">
-                        <div class="shop-item-info">
-                            <div class="shop-item-icon">🛡️</div>
-                            <div class="shop-item-details">
-                                <h4>コンボシールド (Combo Shield)</h4>
-                                <p>解答失敗時にコンボリセットを防ぐシールドを、スピン開始時にレベル個付与する（最大Lv5）。</p>
-                                <p style="color: var(--accent-gold); font-size:0.68rem; margin-top:2px;">レベル: <span id="shop-lvl-prestige-comboShield">0</span></p>
-                            </div>
-                        </div>
-                        <button class="shop-buy-btn" id="btn-buy-prestige-comboShield" onclick="buyPrestigeUpgrade('comboShield')">
-                            購入
-                            <span class="price" style="color: #60a5fa;" id="shop-price-prestige-comboShield">💎 3</span>
+                            <span class="price" style="color: #60a5fa;" id="shop-price-prestige-comboMax">💎 5</span>
                         </button>
                     </div>
 
@@ -1866,7 +1779,23 @@
                         </div>
                         <button class="shop-buy-btn" id="btn-buy-prestige-luck" onclick="buyPrestigeUpgrade('luck')">
                             購入
-                            <span class="price" style="color: #60a5fa;" id="shop-price-prestige-luck">💎 2</span>
+                            <span class="price" style="color: #60a5fa;" id="shop-price-prestige-luck">💎 10</span>
+                        </button>
+                    </div>
+
+                    <!-- Keep Normal Upgrades -->
+                    <div class="shop-item-card">
+                        <div class="shop-item-info">
+                            <div class="shop-item-icon">🔄</div>
+                            <div class="shop-item-details">
+                                <h4>通常強化引き継ぎ (Prestige Keeper)</h4>
+                                <p>転生を行っても、通常ショップの各種強化（配当・タイム・コンボ）のレベルがリセットされず維持される。</p>
+                                <p style="color: var(--accent-gold); font-size:0.68rem; margin-top:2px;">状態: <span id="shop-lvl-prestige-keepNormalUpgrades">未解放</span></p>
+                            </div>
+                        </div>
+                        <button class="shop-buy-btn" id="btn-buy-prestige-keepNormalUpgrades" onclick="buyPrestigeUpgrade('keepNormalUpgrades')">
+                            購入
+                            <span class="price" style="color: #60a5fa;" id="shop-price-prestige-keepNormalUpgrades">💎 10,000</span>
                         </button>
                     </div>
                     <div class="shop-item-card">
@@ -3225,6 +3154,284 @@
         }
     }
 
+    window.buyItem = function(itemType) {
+        let price = 0;
+        if (itemType === 'watch') price = 10000;
+        else return;
+
+        if (player.chips < price) {
+            AudioSynth.play('buzz');
+            alert("チップが不足しています！");
+            return;
+        }
+
+        player.chips -= price;
+        player.items = player.items || { watch: 0 };
+        player.items[itemType] = (player.items[itemType] || 0) + 1;
+        saveLocalStorage();
+        updateHeaderUI();
+        updateShopUpgradeUI();
+        AudioSynth.play('win');
+    };
+
+    window.buyItem = function(itemType) {};
+
+    // Switch Shop Tabs
+    window.switchShopTab = function(tabName) {
+        AudioSynth.play('click');
+        
+        // Remove active class from all tab buttons
+        document.querySelectorAll(".shop-tab").forEach(tab => tab.classList.remove("active"));
+        // Add active class to selected tab button
+        const selectedTabBtn = document.getElementById(`tab-btn-${tabName}`);
+        if (selectedTabBtn) selectedTabBtn.classList.add("active");
+        
+        // Hide all tab contents dynamically
+        document.querySelectorAll("[id^='shop-tab-content-']").forEach(el => el.style.display = "none");
+        
+        // Show active tab content
+        const targetContent = document.getElementById(`shop-tab-content-${tabName}`);
+        if (targetContent) targetContent.style.display = "flex";
+        
+        // If upgrades or prestige tab is opened, update labels
+        updateShopUpgradeUI();
+    };
+
+    let upgradeBuyCount = 1;
+
+    window.setUpgradeBuyCount = function(count) {
+        upgradeBuyCount = count;
+        // Update active class on selector buttons
+        const btns = document.querySelectorAll('.shop-multibuy-btn');
+        btns.forEach(btn => {
+            const label = count === 'MAX' ? 'MAX' : 'x' + count;
+            if (btn.innerText === label) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+        updateShopUpgradeUI();
+    };
+
+    function getUpgradePrice(type, currentLvl) {
+        if (type === 'symbols') {
+            return Math.floor(1000 * Math.pow(1.5, currentLvl));
+        } else if (type === 'timer') {
+            return Math.floor(2000 * Math.pow(1.6, currentLvl));
+        } else if (type === 'comboBonus') {
+            return Math.floor(1500 * Math.pow(1.55, currentLvl));
+        }
+        return 0;
+    }
+
+    function getBulkUpgradeInfo(type, currentLvl, chips) {
+        if (upgradeBuyCount === 'MAX') {
+            let count = 0;
+            let totalCost = 0;
+            let tempLvl = currentLvl;
+            while (true) {
+                const nextCost = getUpgradePrice(type, tempLvl);
+                if (totalCost + nextCost <= chips) {
+                    totalCost += nextCost;
+                    count++;
+                    tempLvl++;
+                } else {
+                    break;
+                }
+            }
+            if (count === 0) {
+                count = 1;
+                totalCost = getUpgradePrice(type, currentLvl);
+            }
+            return { count, totalCost };
+        } else {
+            const targetCount = parseInt(upgradeBuyCount) || 1;
+            let totalCost = 0;
+            for (let i = 0; i < targetCount; i++) {
+                totalCost += getUpgradePrice(type, currentLvl + i);
+            }
+            return { count: targetCount, totalCost };
+        }
+    }
+
+    function updateShopUpgradeUI() {
+        if (!player.upgrades) {
+            player.upgrades = { symbolsLvl: 0, timerLvl: 0, comboBonusLvl: 0 };
+        }
+        if (!player.prestigeUpgrades) {
+            player.prestigeUpgrades = { vipMultiplier: 0, upgradeBooster: 0, chipDouble: 0, startingChips: 0, comboMax: 0, luck: 0, keepNormalUpgrades: 0 };
+        }
+        player.items = player.items || {};
+
+        player.upgrades.comboBonusLvl = player.upgrades.comboBonusLvl || 0;
+        player.prestigeUpgrades.vipMultiplier = player.prestigeUpgrades.vipMultiplier || 0;
+        player.prestigeUpgrades.upgradeBooster = player.prestigeUpgrades.upgradeBooster || 0;
+        player.prestigeUpgrades.chipDouble = player.prestigeUpgrades.chipDouble || 0;
+        player.prestigeUpgrades.startingChips = player.prestigeUpgrades.startingChips || 0;
+        player.prestigeUpgrades.comboMax = player.prestigeUpgrades.comboMax || 0;
+        player.prestigeUpgrades.luck = player.prestigeUpgrades.luck || 0;
+        player.prestigeUpgrades.keepNormalUpgrades = player.prestigeUpgrades.keepNormalUpgrades || 0;
+
+        // Normal Upgrades
+        const symLvl = player.upgrades.symbolsLvl || 0;
+        const timLvl = player.upgrades.timerLvl || 0;
+        const comboBonusLvl = player.upgrades.comboBonusLvl || 0;
+        
+        const symBulk = getBulkUpgradeInfo('symbols', symLvl, player.chips);
+        const timBulk = getBulkUpgradeInfo('timer', timLvl, player.chips);
+        const comboBonusBulk = getBulkUpgradeInfo('comboBonus', comboBonusLvl, player.chips);
+
+        document.getElementById("shop-lvl-symbols").innerText = symLvl;
+        document.getElementById("btn-buy-upgrade-symbols").innerHTML = `強化 (+${symBulk.count}) <span class="price" id="shop-price-symbols">🪙 ${symBulk.totalCost.toLocaleString()}</span>`;
+        
+        document.getElementById("shop-lvl-timer").innerText = timLvl;
+        document.getElementById("btn-buy-upgrade-timer").innerHTML = `強化 (+${timBulk.count}) <span class="price" id="shop-price-timer">🪙 ${timBulk.totalCost.toLocaleString()}</span>`;
+
+        document.getElementById("shop-lvl-comboBonus").innerText = comboBonusLvl;
+        document.getElementById("btn-buy-upgrade-comboBonus").innerHTML = `強化 (+${comboBonusBulk.count}) <span class="price" id="shop-price-comboBonus">🪙 ${comboBonusBulk.totalCost.toLocaleString()}</span>`;
+
+        // Helper to update a prestige upgrade card
+        function updatePrestigeCard(name, currentLvl, maxLvl, costFormula) {
+            const lvlSpan = document.getElementById(`shop-lvl-prestige-${name}`);
+            const btn = document.getElementById(`btn-buy-prestige-${name}`);
+            if (lvlSpan) {
+                if (maxLvl === 1) {
+                    lvlSpan.innerText = currentLvl > 0 ? "所持" : "未所持";
+                } else {
+                    lvlSpan.innerText = currentLvl + (maxLvl ? " / " + maxLvl : "");
+                }
+            }
+            if (btn) {
+                if (maxLvl && currentLvl >= maxLvl) {
+                    btn.disabled = true;
+                    btn.innerText = "MAX";
+                    btn.style.opacity = "0.5";
+                } else {
+                    btn.disabled = false;
+                    const price = costFormula(currentLvl);
+                    btn.innerHTML = `購入 <span class="price" style="color: #60a5fa;">💎 ${price.toLocaleString()}</span>`;
+                    btn.style.opacity = "1";
+                }
+            }
+        }
+
+        // Prestige Upgrades
+        updatePrestigeCard('vip', player.prestigeUpgrades.vipMultiplier, 30, L => 2 * L + 1);
+        updatePrestigeCard('booster', player.prestigeUpgrades.upgradeBooster, 10, L => Math.pow(2, L));
+        updatePrestigeCard('chipdouble', player.prestigeUpgrades.chipDouble, 5, L => 5 * Math.pow(5, L));
+        updatePrestigeCard('startingChips', player.prestigeUpgrades.startingChips, 5, L => L + 1);
+        updatePrestigeCard('comboMax', player.prestigeUpgrades.comboMax, 3, L => 5 * Math.pow(2, L));
+        updatePrestigeCard('luck', player.prestigeUpgrades.luck, 5, L => 10 * Math.pow(10, L));
+        updatePrestigeCard('keepNormalUpgrades', player.prestigeUpgrades.keepNormalUpgrades, 1, L => 10000);
+
+        // Update Shop tab Prestige Execute UI
+        const shopPrestigeChipsCurrent = document.getElementById("shop-prestige-chips-current");
+        const shopPrestigeBonusMultiplier = document.getElementById("shop-prestige-bonus-multiplier");
+        const shopPrestigeCoinsGained = document.getElementById("shop-prestige-coins-gained");
+        const btnShopExecutePrestige = document.getElementById("btn-shop-execute-prestige");
+        
+        if (shopPrestigeChipsCurrent) {
+            shopPrestigeChipsCurrent.innerText = player.chips.toLocaleString();
+        }
+        if (shopPrestigeBonusMultiplier) {
+            const currentVipLvl = player.prestigeUpgrades.vipMultiplier || 0;
+            shopPrestigeBonusMultiplier.innerText = (1 + currentVipLvl * 1.0).toFixed(1) + "x";
+        }
+        
+        const reqChips = getPrestigeRequiredChips();
+        const shopCoinsGained = Math.floor(player.chips / reqChips);
+        if (shopPrestigeCoinsGained) {
+            shopPrestigeCoinsGained.innerText = shopCoinsGained.toLocaleString();
+        }
+        if (btnShopExecutePrestige) {
+            if (player.chips >= reqChips) {
+                btnShopExecutePrestige.disabled = false;
+                btnShopExecutePrestige.innerText = `転生を実行する (+💎 ${shopCoinsGained.toLocaleString()})`;
+            } else {
+                btnShopExecutePrestige.disabled = true;
+                btnShopExecutePrestige.innerText = `転生を実行する (${reqChips.toLocaleString()}チップ必要)`;
+            }
+        }
+    }
+
+    // Buy Normal Upgrades
+    window.buyUpgrade = function(type) {
+        if (!player.upgrades) {
+            player.upgrades = { symbolsLvl: 0, timerLvl: 0, comboBonusLvl: 0 };
+        }
+        if (player.upgrades[type + 'Lvl'] === undefined) {
+            player.upgrades[type + 'Lvl'] = 0;
+        }
+        const currentLvl = player.upgrades[type + 'Lvl'] || 0;
+        const bulkInfo = getBulkUpgradeInfo(type, currentLvl, player.chips);
+        const price = bulkInfo.totalCost;
+        const buyCount = bulkInfo.count;
+
+        if (player.chips < price) {
+            AudioSynth.play('buzz');
+            alert("チップが不足しています！");
+            return;
+        }
+
+        player.chips -= price;
+        player.upgrades[type + 'Lvl'] = currentLvl + buyCount;
+        
+        saveLocalStorage();
+        updateHeaderUI();
+        updateShopUpgradeUI();
+        AudioSynth.play('win');
+    };
+
+    // Buy Prestige Upgrades
+    window.buyPrestigeUpgrade = function(type) {
+        if (!player.prestigeUpgrades) {
+            player.prestigeUpgrades = { vipMultiplier: 0, upgradeBooster: 0, chipDouble: 0, startingChips: 0, comboMax: 0, luck: 0, keepNormalUpgrades: 0 };
+        }
+        
+        const keys = ['vipMultiplier', 'upgradeBooster', 'chipDouble', 'startingChips', 'comboMax', 'luck', 'keepNormalUpgrades'];
+        keys.forEach(k => {
+            if (player.prestigeUpgrades[k] === undefined) {
+                player.prestigeUpgrades[k] = 0;
+            }
+        });
+
+        const config = {
+            vip: { key: 'vipMultiplier', max: 30, priceFn: L => 2 * L + 1 },
+            booster: { key: 'upgradeBooster', max: 10, priceFn: L => Math.pow(2, L) },
+            chipdouble: { key: 'chipDouble', max: 5, priceFn: L => 5 * Math.pow(5, L) },
+            startingChips: { key: 'startingChips', max: 5, priceFn: L => L + 1 },
+            comboMax: { key: 'comboMax', max: 3, priceFn: L => 5 * Math.pow(2, L) },
+            luck: { key: 'luck', max: 5, priceFn: L => 10 * Math.pow(10, L) },
+            keepNormalUpgrades: { key: 'keepNormalUpgrades', max: 1, priceFn: L => 10000 }
+        };
+
+        const cfg = config[type];
+        if (!cfg) return;
+
+        const currentLvl = player.prestigeUpgrades[cfg.key] || 0;
+        if (cfg.max !== null && currentLvl >= cfg.max) {
+            AudioSynth.play('buzz');
+            alert("このアップグレードはすでに最大レベルです！");
+            return;
+        }
+
+        const price = cfg.priceFn(currentLvl);
+        if ((player.prestigeCoins || 0) < price) {
+            AudioSynth.play('buzz');
+            alert("転生コインが不足しています！");
+            return;
+        }
+
+        player.prestigeCoins = (player.prestigeCoins || 0) - price;
+        player.prestigeUpgrades[cfg.key] = currentLvl + 1;
+
+        saveLocalStorage();
+        updateHeaderUI();
+        updateShopUpgradeUI();
+        AudioSynth.play('win');
+    };
+
     // Switch Screens Helper
     function switchScreen(screenId) {
         if (screenId === "screen-shop") {
@@ -3358,22 +3565,23 @@
         player.prestigeCoins = (player.prestigeCoins || 0) + coinsGained;
         
         // Reset chips, items, upgrades
-        const startingChipsLvl = player.prestigeUpgrades.startingChips || 0;
+        const startingChipsLvl = (player.prestigeUpgrades && player.prestigeUpgrades.startingChips) || 0;
         player.chips = 1000 + startingChipsLvl * 2000;
-        player.items = {
-            soda: 1,
-            watch: 2
-        };
-        player.upgrades = {
-            symbolsLvl: 0,
-            timerLvl: 0,
-            comboBonusLvl: 0
-        };
+        player.items = {};
+
+        const keepUpgrades = (player.prestigeUpgrades && player.prestigeUpgrades.keepNormalUpgrades) || 0;
+        if (keepUpgrades <= 0) {
+            player.upgrades = {
+                symbolsLvl: 0,
+                timerLvl: 0,
+                comboBonusLvl: 0
+            };
+        }
 
         saveLocalStorage();
         updateHeaderUI();
         updateShopUpgradeUI();
-        switchShopTab('items'); // Auto switch back to items tab in slots shop panel
+        switchShopTab('upgrades'); // Auto switch back to upgrades tab
         
         AudioSynth.play('win');
         alert(`高次元への転生が完了しました！\n獲得したプレステージコイン: 💎 ${coinsGained.toLocaleString()}\n新しい宇宙での挑戦が始まります！`);
@@ -4067,13 +4275,13 @@
             const timerLvl = (player.upgrades && player.upgrades.timerLvl) || 0;
             const boosterLvl = (player.prestigeUpgrades && player.prestigeUpgrades.upgradeBooster) || 0;
             const boosterMult = 1 + 0.5 * boosterLvl;
-            const timerBonusPerLevel = 0.5 * boosterMult;
+            const timerBonusPerLevel = 0.25 * boosterMult;
             for (let m = 1; m <= 5; m++) {
-                const multiplierValue = (m + timerLvl * timerBonusPerLevel).toFixed(1);
-                const cleanValue = multiplierValue.endsWith(".0") ? multiplierValue.substring(0, multiplierValue.length - 2) : multiplierValue;
+                const rawVal = m * (1 + timerLvl * timerBonusPerLevel);
+                const multiplierValue = rawVal % 1 === 0 ? rawVal.toFixed(0) : rawVal.toFixed(2);
                 const lbl = document.getElementById(`label-seg-${m}`);
                 if (lbl) {
-                    lbl.innerText = `${cleanValue}倍`;
+                    lbl.innerText = `${multiplierValue}倍`;
                 }
             }
 
@@ -4155,7 +4363,7 @@
             const timerLvl = (player.upgrades && player.upgrades.timerLvl) || 0;
             const boosterLvl = (player.prestigeUpgrades && player.prestigeUpgrades.upgradeBooster) || 0;
             const boosterMult = 1 + 0.5 * boosterLvl;
-            const timerBonusPerLevel = 0.5 * boosterMult;
+            const timerBonusPerLevel = 0.25 * boosterMult;
             let baseSegMultiplier = 1;
             let activeSegmentIndex = 1;
 
@@ -4165,7 +4373,7 @@
             else if (currentPct > 20) { baseSegMultiplier = 2; activeSegmentIndex = 2; }
             else { baseSegMultiplier = 1; activeSegmentIndex = 1; }
 
-            const activeMultiplier = baseSegMultiplier + timerLvl * timerBonusPerLevel;
+            const activeMultiplier = baseSegMultiplier * (1 + timerLvl * timerBonusPerLevel);
             slotsState.finalMultiplier = activeMultiplier;
 
             // Highlight the active label
@@ -4348,36 +4556,13 @@
         updateHeaderUI();
     };
 
-    // Slots global Watch item usage (adds 15 seconds to global timer)
-    window.useGlobalWatchInSlots = function() {
-        if (player.items.watch <= 0) return;
-        if (slotsState.answered.every(val => val === true)) return;
-
-        AudioSynth.play('click');
-        player.items.watch--;
-
-        // Add 15 seconds
-        slotsState.timeRemaining += 15;
-        slotsState.timeLimit += 15;
-
-        saveLocalStorage();
-        updateSlotsGlobalItemsUI();
-        updateHeaderUI();
-    };
+    window.useGlobalWatchInSlots = function() {};
 
     function updateSlotsGlobalItemsUI() {
-        document.getElementById("slots-count-soda-global").innerText = player.items.soda;
-        document.getElementById("slots-count-watch-global").innerText = player.items.watch;
-        
-        // Disable global watch button if none left
-        document.getElementById("btn-slots-use-watch-global").disabled = (player.items.watch <= 0);
-
-        for (let i = 0; i < 3; i++) {
-            const sodaBtn = document.getElementById(`btn-col-soda-${i + 1}`);
-            if (sodaBtn && !slotsState.answered[i]) {
-                sodaBtn.disabled = (player.items.soda <= 0 || slotsState.sodaUsed[i]);
-            }
-        }
+        const sodaGlobal = document.getElementById("slots-count-soda-global");
+        if (sodaGlobal) sodaGlobal.innerText = 0;
+        const watchGlobal = document.getElementById("slots-count-watch-global");
+        if (watchGlobal) watchGlobal.innerText = 0;
     }
 
 
