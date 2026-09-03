@@ -150,6 +150,19 @@
             border-color: rgba(251, 191, 36, 0.3);
             color: var(--accent-gold);
             text-shadow: 0 0 8px rgba(251, 191, 36, 0.2);
+            cursor: pointer;
+            user-select: none;
+            transition: transform 0.1s ease, filter 0.1s ease, background 0.15s ease;
+        }
+
+        .header-item.chips-display:hover {
+            filter: brightness(1.15);
+            background: rgba(251, 191, 36, 0.2);
+            border-color: var(--accent-gold);
+        }
+
+        .header-item.chips-display:active {
+            transform: scale(0.94);
         }
 
         /* Buttons */
@@ -1556,7 +1569,7 @@
             <div class="header-item rating-display" style="background: rgba(16, 185, 129, 0.15); border: 1px solid #10b981; border-radius: 4px; padding: 4px 8px; display: flex; align-items: center; gap: 4px;">
                 <span class="icon">🏆</span> <span id="rating-balance-tier" style="font-weight: bold; font-size: 0.78rem;">Gold</span> <span id="rating-balance" style="color: var(--text-main); font-size: 0.78rem; font-weight: bold;">(1500)</span>
             </div>
-            <div class="header-item chips-display">
+            <div class="header-item chips-display" id="chips-display-btn" title="所持チップ">
                 <span class="icon">🪙</span> <span id="chips-balance">1,000</span>
             </div>
             <div class="header-item prestige-display" style="background: rgba(212, 175, 55, 0.15); border: 1px solid var(--accent-gold); border-radius: 4px; padding: 4px 8px; display: flex; align-items: center; gap: 4px;">
@@ -3423,67 +3436,79 @@
     }
 
     function triggerSecretResetMenu() {
-        AudioSynth.play('buzz');
-        const confirmReset = confirm("【警告：開発者用初期化メニュー】\nすべてのゲームデータを初期化し、セーブデータを消去しますか？\n（獲得したプレステージコイン、購入済みの強化、ハイスコアなどすべてのデータが完全に削除されます。）");
-        if (confirmReset) {
-            const finalConfirm = confirm("本当に初期化しますか？この操作は取り消せません。");
-            if (finalConfirm) {
-                // Clear localStorage
-                localStorage.removeItem(LOCAL_STORAGE_KEY);
-                // Reset player object to defaults
-                player = {
-                    chips: 1000,
-                    highscore: 1000,
-                    prestigeCoins: 0,
-                    items: {
-                        soda: 1,
-                        watch: 2
-                    },
-                    upgrades: {
-                        symbolsLvl: 0,
-                        timerLvl: 0,
-                        comboBonusLvl: 0
-                    },
-                    prestigeUpgrades: {
-                        vipMultiplier: 0,
-                        superSoda: 0,
-                        hyperWatch: 0,
-                        upgradeBooster: 0,
-                        chipDouble: 0,
-                        startingChips: 0,
-                        comboMax: 0,
-                        comboShield: 0,
-                        luck: 0
+        AudioSynth.play('click');
+        const inputCode = prompt("【管理者用初期化メニュー】\nパスコードを入力してください:");
+        if (inputCode === null) return; // User cancelled
+        
+        const cleanCode = inputCode.trim().toLowerCase();
+        if (cleanCode === "1200" || cleanCode === "reset") {
+            AudioSynth.play('buzz');
+            const confirmReset = confirm("【警告：初期化メニュー】\nすべてのゲームデータを初期化し、セーブデータを消去しますか？\n（獲得したチップ、プレステージコイン、購入済みの強化、ハイスコアなどすべてのデータが削除されます。）");
+            if (confirmReset) {
+                const finalConfirm = confirm("本当に初期化しますか？この操作は取り消せません。");
+                if (finalConfirm) {
+                    // Clear localStorage
+                    localStorage.removeItem("vocab_casino_player");
+                    localStorage.removeItem("vocab_casino_history");
+                    localStorage.removeItem("vocab_bookmarks");
+                    // Reset player object to defaults
+                    player = {
+                        chips: 1000,
+                        highscore: 1000,
+                        prestigeCoins: 0,
+                        items: {
+                            soda: 1,
+                            watch: 2
+                        },
+                        upgrades: {
+                            symbolsLvl: 0,
+                            timerLvl: 0,
+                            comboBonusLvl: 0
+                        },
+                        prestigeUpgrades: {
+                            vipMultiplier: 0,
+                            superSoda: 0,
+                            hyperWatch: 0,
+                            upgradeBooster: 0,
+                            chipDouble: 0,
+                            startingChips: 0,
+                            comboMax: 0,
+                            comboShield: 0,
+                            luck: 0
+                        }
+                    };
+                    saveLocalStorage();
+                    updateHeaderUI();
+                    if (typeof updateShopUpgradeUI === 'function') {
+                        updateShopUpgradeUI();
                     }
-                };
-                saveLocalStorage();
-                updateHeaderUI();
-                if (typeof updateShopUpgradeUI === 'function') {
-                    updateShopUpgradeUI();
+                    alert("すべてのゲームデータが初期化されました。ページをリロードします。");
+                    location.reload();
                 }
-                alert("すべてのゲームデータが初期化されました。ページをリロードします。");
-                location.reload();
             }
+        } else {
+            AudioSynth.play('buzz');
+            alert("パスコードが正しくありません。");
         }
     }
 
     // Setup Navigation and event listeners
     function setupEventListeners() {
-        // Casino Lobby title easter egg for secret reset menu
-        let lobbyClickCount = 0;
-        let lobbyClickTimeout = null;
-        const lobbyTitle = document.getElementById("lobby-title");
-        if (lobbyTitle) {
-            lobbyTitle.addEventListener("click", () => {
-                lobbyClickCount++;
-                if (lobbyClickTimeout) clearTimeout(lobbyClickTimeout);
-                lobbyClickTimeout = setTimeout(() => {
-                    lobbyClickCount = 0;
-                }, 2000);
+        // Chips display 5-tap easter egg for secret reset menu
+        let chipsClickCount = 0;
+        let chipsClickTimeout = null;
+        const chipsDisplayBtn = document.getElementById("chips-display-btn");
+        if (chipsDisplayBtn) {
+            chipsDisplayBtn.addEventListener("click", () => {
+                chipsClickCount++;
+                if (chipsClickTimeout) clearTimeout(chipsClickTimeout);
+                chipsClickTimeout = setTimeout(() => {
+                    chipsClickCount = 0;
+                }, 2500);
 
-                if (lobbyClickCount >= 30) {
-                    lobbyClickCount = 0;
-                    clearTimeout(lobbyClickTimeout);
+                if (chipsClickCount >= 5) {
+                    chipsClickCount = 0;
+                    clearTimeout(chipsClickTimeout);
                     triggerSecretResetMenu();
                 }
             });
