@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- Prevent stale caching on Safari / Mobile browsers -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>Target 1200 Vocab Casino</title>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
@@ -3987,8 +3991,6 @@
     }
 
     function startAllSlotsQuestions() {
-        updateSlotsGlobalItemsUI();
-
         for (let i = 0; i < 3; i++) {
             const colEl = document.getElementById(`slots-quiz-col-${i + 1}`);
             colEl.classList.add("active-col");
