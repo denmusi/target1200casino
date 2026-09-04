@@ -1955,16 +1955,6 @@
                                 <span id="label-seg-5" class="timer-segment-label" style="width: 20%;">5倍</span>
                             </div>
                         </div>
-
-                        <!-- Hidden item elements to prevent JS exceptions -->
-                        <div style="display: none;">
-                            <span id="slots-count-soda-global">0</span>
-                            <span id="slots-count-watch-global">0</span>
-                            <button id="btn-slots-use-watch-global"></button>
-                            <button id="btn-col-soda-1"></button>
-                            <button id="btn-col-soda-2"></button>
-                            <button id="btn-col-soda-3"></button>
-                        </div>
                         
                         <!-- 3 Columns Row -->
                         <div id="slots-quiz-columns" style="display: flex; gap: 20px; justify-content: center; margin-bottom: 0;">
@@ -2527,8 +2517,6 @@
         includeIdioms: true,
         rating: 1500,
         items: {
-            soda: 1,
-            watch: 2
         },
         upgrades: {
             symbolsLvl: 0,
@@ -2537,8 +2525,6 @@
         },
         prestigeUpgrades: {
             vipMultiplier: 0,
-            superSoda: 0,
-            hyperWatch: 0,
             upgradeBooster: 0,
             chipDouble: 0,
             startingChips: 0,
@@ -2573,7 +2559,6 @@
         timeLimit: 10, // default 10 seconds
         timeRemaining: 10,
         correctAnswersCount: 0,
-        activeSodaUsed: false,
         onCompleteCallback: null,
         onIncorrectCallback: null
     };
@@ -2639,17 +2624,13 @@
             try {
                 player = JSON.parse(savedPlayer);
                 // Ensure item types are correct
-                player.items = player.items || { soda: 1, watch: 2 };
-                if (player.items.shield !== undefined) delete player.items.shield;
                 player.prestigeCoins = player.prestigeCoins || 0;
                 player.upgrades = player.upgrades || { symbolsLvl: 0, timerLvl: 0, comboBonusLvl: 0 };
                 player.upgrades.symbolsLvl = player.upgrades.symbolsLvl || 0;
                 player.upgrades.timerLvl = player.upgrades.timerLvl || 0;
                 player.upgrades.comboBonusLvl = player.upgrades.comboBonusLvl || 0;
-                player.prestigeUpgrades = player.prestigeUpgrades || { vipMultiplier: 0, superSoda: 0, hyperWatch: 0, upgradeBooster: 0, chipDouble: 0, startingChips: 0, comboMax: 0, comboShield: 0, luck: 0 };
+                player.prestigeUpgrades = player.prestigeUpgrades || { vipMultiplier: 0, upgradeBooster: 0, chipDouble: 0, startingChips: 0, comboMax: 0, comboShield: 0, luck: 0 };
                 player.prestigeUpgrades.vipMultiplier = player.prestigeUpgrades.vipMultiplier || 0;
-                player.prestigeUpgrades.superSoda = player.prestigeUpgrades.superSoda || 0;
-                player.prestigeUpgrades.hyperWatch = player.prestigeUpgrades.hyperWatch || 0;
                 player.prestigeUpgrades.upgradeBooster = player.prestigeUpgrades.upgradeBooster || 0;
                 player.prestigeUpgrades.chipDouble = player.prestigeUpgrades.chipDouble || 0;
                 player.prestigeUpgrades.startingChips = player.prestigeUpgrades.startingChips || 0;
@@ -3084,22 +3065,6 @@
                 spinBtn.innerText = `🎰 SPIN / スピン開始 (${currentBet})`;
             }
         }
-        
-        // Sync item counts
-        const shopSoda = document.getElementById("shop-count-soda");
-        if (shopSoda) shopSoda.innerText = player.items.soda;
-        const shopWatch = document.getElementById("shop-count-watch");
-        if (shopWatch) shopWatch.innerText = player.items.watch;
-        
-        // Slots screen specific item display
-        const slotsSoda = document.getElementById("slots-count-soda-global");
-        if (slotsSoda) {
-            slotsSoda.innerText = player.items.soda;
-        }
-        const slotsWatch = document.getElementById("slots-count-watch-global");
-        if (slotsWatch) {
-            slotsWatch.innerText = player.items.watch;
-        }
     }
 
     // Generate quiz word pool based on current range, padding with adjacent words if < 3
@@ -3158,28 +3123,6 @@
             strip.style.transform = `translateY(0px)`;
         }
     }
-
-    window.buyItem = function(itemType) {
-        let price = 0;
-        if (itemType === 'watch') price = 10000;
-        else return;
-
-        if (player.chips < price) {
-            AudioSynth.play('buzz');
-            alert("チップが不足しています！");
-            return;
-        }
-
-        player.chips -= price;
-        player.items = player.items || { watch: 0 };
-        player.items[itemType] = (player.items[itemType] || 0) + 1;
-        saveLocalStorage();
-        updateHeaderUI();
-        updateShopUpgradeUI();
-        AudioSynth.play('win');
-    };
-
-    window.buyItem = function(itemType) {};
 
     // Switch Shop Tabs
     window.switchShopTab = function(tabName) {
@@ -3267,7 +3210,6 @@
         if (!player.prestigeUpgrades) {
             player.prestigeUpgrades = { vipMultiplier: 0, upgradeBooster: 0, chipDouble: 0, startingChips: 0, comboMax: 0, luck: 0, keepNormalUpgrades: 0 };
         }
-        player.items = player.items || {};
 
         player.upgrades.comboBonusLvl = player.upgrades.comboBonusLvl || 0;
         player.prestigeUpgrades.vipMultiplier = player.prestigeUpgrades.vipMultiplier || 0;
@@ -3572,7 +3514,6 @@
         // Reset chips, items, upgrades
         const startingChipsLvl = (player.prestigeUpgrades && player.prestigeUpgrades.startingChips) || 0;
         player.chips = 1000 + startingChipsLvl * 2000;
-        player.items = {};
 
         const keepUpgrades = (player.prestigeUpgrades && player.prestigeUpgrades.keepNormalUpgrades) || 0;
         if (keepUpgrades <= 0) {
@@ -3670,8 +3611,6 @@
                         highscore: 1000,
                         prestigeCoins: 0,
                         items: {
-                            soda: 1,
-                            watch: 2
                         },
                         upgrades: {
                             symbolsLvl: 0,
@@ -3680,8 +3619,6 @@
                         },
                         prestigeUpgrades: {
                             vipMultiplier: 0,
-                            superSoda: 0,
-                            hyperWatch: 0,
                             upgradeBooster: 0,
                             chipDouble: 0,
                             startingChips: 0,
@@ -3959,7 +3896,6 @@
         quizState.correctAnswersCount = 0;
         quizState.currentWordIndex = 0;
         quizState.timeLimit = timeLimit;
-        quizState.activeSodaUsed = false;
         quizState.onCompleteCallback = onComplete;
         quizState.onIncorrectCallback = onIncorrect;
         quizState.isSlotsMode = isSlots;
@@ -3987,7 +3923,6 @@
             slotsState.timeRemaining = slotsBaseTime;
             slotsState.timeLimit = slotsBaseTime;
             slotsState.answered = [false, false, false];
-            slotsState.sodaUsed = [false, false, false];
 
             // Update timer segment labels with upgraded multipliers
             const timerLvl = (player.upgrades && player.upgrades.timerLvl) || 0;
@@ -4128,8 +4063,6 @@
         // Disable buttons in this column
         const choicesArea = document.getElementById(`slots-choices-${index + 1}`);
         choicesArea.querySelectorAll(".choice-btn").forEach(btn => btn.disabled = true);
-        const sodaBtn = document.getElementById(`btn-col-soda-${index + 1}`);
-        if (sodaBtn) sodaBtn.disabled = true;
 
         const colEl = document.getElementById(`slots-quiz-col-${index + 1}`);
         colEl.classList.remove("active-col");
@@ -4176,8 +4109,6 @@
                 // Disable column
                 const choicesArea = document.getElementById(`slots-choices-${i + 1}`);
                 choicesArea.querySelectorAll(".choice-btn").forEach(btn => btn.disabled = true);
-                const sodaBtn = document.getElementById(`btn-col-soda-${i + 1}`);
-                if (sodaBtn) sodaBtn.disabled = true;
 
                 const colEl = document.getElementById(`slots-quiz-col-${i + 1}`);
                 colEl.classList.remove("active-col");
@@ -4239,48 +4170,6 @@
         document.getElementById("slots-bet-control").style.display = "block";
         document.getElementById("btn-spin-slots").style.display = "block";
     }
-
-    // Slots column Soda item usage
-    window.useSodaInSlotsCol = function(index) {
-        if (player.items.soda <= 0) return;
-        if (slotsState.answered[index]) return;
-        if (slotsState.sodaUsed[index]) return;
-
-        AudioSynth.play('click');
-        player.items.soda--;
-        slotsState.sodaUsed[index] = true;
-
-        // Disable this column's soda button
-        document.getElementById(`btn-col-soda-${index + 1}`).disabled = true;
-
-        // Eliminate wrong choices (1 or 2 based on Super Soda prestige upgrade)
-        const hasSuperSoda = (player.prestigeUpgrades && player.prestigeUpgrades.superSoda) || 0;
-        const incorrectLimit = hasSuperSoda > 0 ? 2 : 1;
-
-        const targetWord = quizState.wordsQueue[index];
-        let incorrectRemoved = 0;
-        const choicesArea = document.getElementById(`slots-choices-${index + 1}`);
-        const buttons = Array.from(choicesArea.querySelectorAll(".choice-btn"));
-        buttons.sort(() => 0.5 - Math.random()).forEach(btn => {
-            if (btn.innerText !== targetWord.ja && incorrectRemoved < incorrectLimit) {
-                btn.style.opacity = "0.2";
-                btn.disabled = true;
-                incorrectRemoved++;
-            }
-        });
-
-        saveLocalStorage();
-        updateSlotsGlobalItemsUI();
-        updateHeaderUI();
-    };
-
-    window.useGlobalWatchInSlots = function() {};
-
-    function updateSlotsGlobalItemsUI() {
-        const sodaGlobal = document.getElementById("slots-count-soda-global");
-        if (sodaGlobal) sodaGlobal.innerText = 0;
-        const watchGlobal = document.getElementById("slots-count-watch-global");
-        if (watchGlobal) watchGlobal.innerText = 0;
     }
 
 
