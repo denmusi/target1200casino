@@ -1646,7 +1646,7 @@
                             <div class="shop-item-icon">⚡</div>
                             <div class="shop-item-details">
                                 <h4>シンボル配当強化 (All-Symbol Payout)</h4>
-                                <p>スロットの全シンボルの配当倍率をレベルごとに+25%強化する。</p>
+                                <p id="shop-desc-symbols">スロットの全シンボルの配当倍率をレベルごとに+25%強化する。</p>
                                 <p style="color: var(--accent-gold); font-size:0.68rem; margin-top:2px;">レベル: <span id="shop-lvl-symbols">0</span></p>
                             </div>
                         </div>
@@ -1662,7 +1662,7 @@
                             <div class="shop-item-icon">⏱️</div>
                             <div class="shop-item-details">
                                 <h4>タイムボーナス強化 (Timer Bonus)</h4>
-                                <p>スロット停止までの解答時間ボーナス倍率をレベルごとに+25%強化する。</p>
+                                <p id="shop-desc-timer">スロット停止までの解答時間ボーナス倍率をレベルごとに+25%強化する。</p>
                                 <p style="color: var(--accent-gold); font-size:0.68rem; margin-top:2px;">レベル: <span id="shop-lvl-timer">0</span></p>
                             </div>
                         </div>
@@ -1678,7 +1678,7 @@
                             <div class="shop-item-icon">🔥</div>
                             <div class="shop-item-details">
                                 <h4>コンボ配当強化 (Combo Bonus)</h4>
-                                <p>コンボごとの獲得チップ加算率をレベルごとに+5%強化する（初期+10%）。</p>
+                                <p id="shop-desc-comboBonus">コンボごとの獲得チップ加算率をレベルごとに+5%強化する（初期+10%）。</p>
                                 <p style="color: var(--accent-gold); font-size:0.68rem; margin-top:2px;">レベル: <span id="shop-lvl-comboBonus">0</span></p>
                             </div>
                         </div>
@@ -1697,7 +1697,7 @@
                             <div class="shop-item-icon">👑</div>
                             <div class="shop-item-details">
                                 <h4>VIPグローバルマルチプライヤー</h4>
-                                <p>スロットの配当結果に永久に+100%の乗算補正を加算する（最大Lv30）。</p>
+                                <p id="shop-desc-prestige-vip">スロットの配当結果に永久に+100%の乗算補正を加算する（最大Lv30）。</p>
                                 <p style="color: var(--accent-gold); font-size:0.68rem; margin-top:2px;">レベル: <span id="shop-lvl-prestige-vip">0</span></p>
                             </div>
                         </div>
@@ -1713,7 +1713,7 @@
                             <div class="shop-item-icon">⚡</div>
                             <div class="shop-item-details">
                                 <h4>超強化ブースター (Super Booster)</h4>
-                                <p>通常強化（配当倍率・タイム）の効果をレベルごとに+50%強化する（最大Lv10）。</p>
+                                <p id="shop-desc-prestige-booster">通常強化（配当倍率・タイム）の効果をレベルごとに+50%強化する（最大Lv10）。</p>
                                 <p style="color: var(--accent-gold); font-size:0.68rem; margin-top:2px;">レベル: <span id="shop-lvl-prestige-booster">0</span></p>
                             </div>
                         </div>
@@ -1729,7 +1729,7 @@
                             <div class="shop-item-icon">💰</div>
                             <div class="shop-item-details">
                                 <h4>全体のチップ獲得量×2</h4>
-                                <p>スロットでの獲得チップ総量を永続的に2倍（レベルごとに累積して2倍、4倍...）にする（最大Lv5）。</p>
+                                <p id="shop-desc-prestige-chipdouble">スロットでの獲得チップ総量を永続的に2倍（レベルごとに累積して2倍、4倍...）にする（最大Lv5）。</p>
                                 <p style="color: var(--accent-gold); font-size:0.68rem; margin-top:2px;">レベル: <span id="shop-lvl-prestige-chipdouble">0</span></p>
                             </div>
                         </div>
@@ -1999,35 +1999,38 @@
                 </button>
 
                 <div>
-                    <h3 class="shop-panel-title" style="margin-bottom: 8px;">🏆 Payouts</h3>
+                    <h3 class="shop-panel-title" style="margin-bottom: 8px;">
+                        🏆 Payouts
+                        <span id="payouts-symbol-bonus" style="font-size: 0.82rem; color: #60a5fa; font-weight: bold; background: rgba(96, 165, 250, 0.15); padding: 2px 8px; border-radius: 6px; border: 1px solid rgba(96, 165, 250, 0.3); margin-left: 4px;">+0%</span>
+                    </h3>
                 <div class="slots-payout-legend">
                     <div class="payout-item jackpot-legend">
                         <span>🌟 7️⃣7️⃣7️⃣ Jackpot</span>
-                        <span>50倍</span>
+                        <span id="payout-val-777">50倍</span>
                     </div>
                     <div class="payout-item jackpot-legend">
                         <span>🌟 💎💎💎 Jackpot</span>
-                        <span>20倍</span>
+                        <span id="payout-val-diamond">20倍</span>
                     </div>
                     <div class="payout-item">
                         <span>🔔🔔🔔 Matching Triple</span>
-                        <span>10倍</span>
+                        <span id="payout-val-bell">10倍</span>
                     </div>
                     <div class="payout-item">
                         <span>🍒🍒🍒 Matching Triple</span>
-                        <span>8倍</span>
+                        <span id="payout-val-cherry">8倍</span>
                     </div>
                     <div class="payout-item">
                         <span>🍇🍇🍇 Matching Triple</span>
-                        <span>6倍</span>
+                        <span id="payout-val-grape">6倍</span>
                     </div>
                     <div class="payout-item">
                         <span>🍋🍋🍋 Matching Triple</span>
-                        <span>5倍</span>
+                        <span id="payout-val-lemon">5倍</span>
                     </div>
                     <div class="payout-item">
                         <span>Pair (揃い2つ)</span>
-                        <span>0.5倍</span>
+                        <span id="payout-val-pair">0.5倍</span>
                     </div>
                     <div class="payout-item">
                         <span>No Match (揃いなし)</span>
@@ -3229,18 +3232,81 @@
         const timLvl = player.upgrades.timerLvl || 0;
         const comboBonusLvl = player.upgrades.comboBonusLvl || 0;
         
+        const boosterLvl = (player.prestigeUpgrades && player.prestigeUpgrades.upgradeBooster) || 0;
+        const boosterMult = 1 + 0.5 * boosterLvl;
+
         const symBulk = getBulkUpgradeInfo('symbols', symLvl, player.chips);
         const timBulk = getBulkUpgradeInfo('timer', timLvl, player.chips);
         const comboBonusBulk = getBulkUpgradeInfo('comboBonus', comboBonusLvl, player.chips);
 
+        // Calculated Symbol Multipliers
+        const symBonusPct = Math.round(symLvl * 25 * boosterMult);
+        const symRatio = 1 + symLvl * 0.25 * boosterMult;
+
         const _e_shop_lvl_symbols = document.getElementById('shop-lvl-symbols'); if (_e_shop_lvl_symbols) _e_shop_lvl_symbols.innerText = symLvl;
         const _e_btn_buy_upgrade_symbols = document.getElementById('btn-buy-upgrade-symbols'); if (_e_btn_buy_upgrade_symbols) _e_btn_buy_upgrade_symbols.innerHTML = `強化 (+${symBulk.count}) <span class="price" id="shop-price-symbols">🪙 ${symBulk.totalCost.toLocaleString()}</span>`;
+        const _e_payouts_symbol_bonus = document.getElementById('payouts-symbol-bonus'); if (_e_payouts_symbol_bonus) _e_payouts_symbol_bonus.innerText = `+${symBonusPct}%`;
+
+        // Update Payout Legend values dynamically in real time
+        const payoutLegendMap = [
+            { id: 'payout-val-777', base: 50 },
+            { id: 'payout-val-diamond', base: 20 },
+            { id: 'payout-val-bell', base: 10 },
+            { id: 'payout-val-cherry', base: 8 },
+            { id: 'payout-val-grape', base: 6 },
+            { id: 'payout-val-lemon', base: 5 },
+            { id: 'payout-val-pair', base: 0.5 }
+        ];
+        payoutLegendMap.forEach(item => {
+            const el = document.getElementById(item.id);
+            if (el) {
+                const eff = item.base * symRatio;
+                const effStr = (eff % 1 === 0) ? eff.toFixed(0) : eff.toFixed(2);
+                el.innerText = `${effStr}倍`;
+            }
+        });
+
+        // Update Shop Card Descriptions dynamically in real time
+        const _e_shop_desc_symbols = document.getElementById('shop-desc-symbols');
+        if (_e_shop_desc_symbols) {
+            _e_shop_desc_symbols.innerText = `スロットの全シンボルの配当倍率をレベルごとに+25%強化する。（現在: +${symBonusPct}% / 倍率: ${symRatio.toFixed(2)}倍）`;
+        }
         
         const _e_shop_lvl_timer = document.getElementById('shop-lvl-timer'); if (_e_shop_lvl_timer) _e_shop_lvl_timer.innerText = timLvl;
         const _e_btn_buy_upgrade_timer = document.getElementById('btn-buy-upgrade-timer'); if (_e_btn_buy_upgrade_timer) _e_btn_buy_upgrade_timer.innerHTML = `強化 (+${timBulk.count}) <span class="price" id="shop-price-timer">🪙 ${timBulk.totalCost.toLocaleString()}</span>`;
+        const _e_shop_desc_timer = document.getElementById('shop-desc-timer');
+        if (_e_shop_desc_timer) {
+            const timBonusPct = Math.round(timLvl * 25 * boosterMult);
+            const maxTimMult = (5 * (1 + timLvl * 0.25 * boosterMult)).toFixed(2);
+            _e_shop_desc_timer.innerText = `スロット停止までの解答時間ボーナス倍率をレベルごとに+25%強化する。（現在: +${timBonusPct}% / 最大 ${maxTimMult}倍）`;
+        }
 
         const _e_shop_lvl_comboBonus = document.getElementById('shop-lvl-comboBonus'); if (_e_shop_lvl_comboBonus) _e_shop_lvl_comboBonus.innerText = comboBonusLvl;
         const _e_btn_buy_upgrade_comboBonus = document.getElementById('btn-buy-upgrade-comboBonus'); if (_e_btn_buy_upgrade_comboBonus) _e_btn_buy_upgrade_comboBonus.innerHTML = `強化 (+${comboBonusBulk.count}) <span class="price" id="shop-price-comboBonus">🪙 ${comboBonusBulk.totalCost.toLocaleString()}</span>`;
+        const _e_shop_desc_comboBonus = document.getElementById('shop-desc-comboBonus');
+        if (_e_shop_desc_comboBonus) {
+            const comboAddPct = Math.round((0.10 + comboBonusLvl * 0.05 * boosterMult) * 100);
+            _e_shop_desc_comboBonus.innerText = `コンボごとの獲得チップ加算率をレベルごとに+5%強化する。（現在: 1コンボにつき+${comboAddPct}%）`;
+        }
+
+        // Prestige Card Descriptions
+        const vipLvl = player.prestigeUpgrades.vipMultiplier || 0;
+        const _e_shop_desc_prestige_vip = document.getElementById('shop-desc-prestige-vip');
+        if (_e_shop_desc_prestige_vip) {
+            _e_shop_desc_prestige_vip.innerText = `スロットの配当結果に永久に+100%の乗算補正を加算する。（現在: +${vipLvl * 100}% / 補正: ${(1 + vipLvl * 1.0).toFixed(1)}倍）`;
+        }
+
+        const _e_shop_desc_prestige_booster = document.getElementById('shop-desc-prestige-booster');
+        if (_e_shop_desc_prestige_booster) {
+            _e_shop_desc_prestige_booster.innerText = `通常強化（配当倍率・タイム）の効果をレベルごとに+50%強化する。（現在: 効果 +${boosterLvl * 50}%）`;
+        }
+
+        const chipDoubleLvl = player.prestigeUpgrades.chipDouble || 0;
+        const chipDoubleMult = Math.pow(2, chipDoubleLvl);
+        const _e_shop_desc_prestige_chipdouble = document.getElementById('shop-desc-prestige-chipdouble');
+        if (_e_shop_desc_prestige_chipdouble) {
+            _e_shop_desc_prestige_chipdouble.innerText = `スロットでの獲得チップ総量を永続的に2倍にする。（現在: ${chipDoubleMult}倍）`;
+        }
 
         // Helper to update a prestige upgrade card
         function updatePrestigeCard(name, currentLvl, maxLvl, costFormula) {
